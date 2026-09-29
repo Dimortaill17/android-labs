@@ -4,13 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.androidlabs.ui.theme.AndroidLabsTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,8 +26,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidLabsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    LabScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -31,17 +36,33 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun LabScreen(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.padding(24.dp)
+    ) {
+        Text(
+            text = "Лабораторная работа №1",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = "Вариант 12\n",
+            fontSize = 18.sp,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        Text("Задание: Вычислить среднее значение всех четных элементов списка, находящихся в нечетных местах.\n")
+        Text("Исходный список:")
+        Text("Результат вычисления:")
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     AndroidLabsTheme {
-        Greeting("Android")
+        LabScreen()
     }
 }
