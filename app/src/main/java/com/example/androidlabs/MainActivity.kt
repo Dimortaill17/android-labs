@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +65,16 @@ fun LabScreen(modifier: Modifier = Modifier) {
         Text("Задание: Вычислить среднее значение всех четных элементов списка, находящихся в нечетных местах.\n")
         Text("Исходный список:")
         Text(numbers.joinToString(", ") + "\n")
-        Text("Результат вычисления:")
+
+        Button(
+            onClick = {
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("Вычислить")
+        }
+
+        Text("\nРезультат вычисления:")
     }
 }
 
