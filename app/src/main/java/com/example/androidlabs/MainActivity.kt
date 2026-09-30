@@ -62,8 +62,18 @@ fun LabScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
-        Text("Задание: Вычислить среднее значение всех четных элементов списка, находящихся в нечетных местах.\n")
-        Text("Исходный список:")
+        Text(
+            text = "Задание:",
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "Вычислить среднее значение всех четных элементов списка, " +
+                    "находящихся в нечетных местах.\n"
+        )
+        Text(
+            text = "Исходный список:",
+            fontWeight = FontWeight.Bold
+        )
         Text(numbers.joinToString(", ") + "\n")
 
         Button(
@@ -74,7 +84,10 @@ fun LabScreen(modifier: Modifier = Modifier) {
             Text("Вычислить")
         }
 
-        Text("\nРезультат вычисления:")
+        Text(
+            text = "\nРезультат вычисления:",
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
