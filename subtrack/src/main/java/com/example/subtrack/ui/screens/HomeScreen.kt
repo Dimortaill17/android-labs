@@ -1,5 +1,6 @@
 package com.example.subtrack.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,13 +30,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.subtrack.R
+import com.example.subtrack.SubscriptionFormActivity
 import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.SectionHeader
 import com.example.subtrack.ui.components.StatCard
 import com.example.subtrack.ui.components.SubscriptionCard
@@ -49,9 +54,11 @@ fun HomeScreen(
     repository: SubscriptionRepository,
     refreshKey: Int
 ) {
-    val subscriptions = remember(refreshKey) { repository.getSubscriptions() }
-    val today = remember(refreshKey) { LocalDate.now() }
-    val hour = remember(refreshKey) { LocalTime.now().hour }
+    val context = LocalContext.current
+    var reloadKey by remember { mutableIntStateOf(0) }
+    val subscriptions = remember(reloadKey, refreshKey) { repository.getSubscriptions() }
+    val today = remember(reloadKey, refreshKey) { LocalDate.now() }
+    val hour = remember(reloadKey, refreshKey) { LocalTime.now().hour }
 
     var sortDescending by remember { mutableStateOf(true) }
 
@@ -84,6 +91,14 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
     val allSubscriptionsIndex = 2 + maxOf(nearestSubscriptions.size, 1)
 
+    fun openForm(subscription: Subscription?) {
+        val intent = Intent(context, SubscriptionFormActivity::class.java)
+        if (subscription != null) {
+            intent.putExtra(SubscriptionFormActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
+        }
+        context.startActivity(intent)
+    }
+
     Scaffold { innerPadding ->
         LazyColumn(
             state = listState,
@@ -106,7 +121,7 @@ fun HomeScreen(
                     Column {
                         HomeHeader(
                             greeting = greeting,
-                            onAddClick = {}
+                            onAddClick = { openForm(null) }
                         )
 
                         Row(
@@ -153,7 +168,7 @@ fun HomeScreen(
                     SubscriptionCard(
                         subscription = subscription,
                         today = today,
-                        onClick = {},
+                        onClick = { openForm(subscription) },
                         onLongClick = {},
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
@@ -175,7 +190,7 @@ fun HomeScreen(
                     SubscriptionCard(
                         subscription = subscription,
                         today = today,
-                        onClick = {},
+                        onClick = { openForm(subscription) },
                         onLongClick = {},
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
