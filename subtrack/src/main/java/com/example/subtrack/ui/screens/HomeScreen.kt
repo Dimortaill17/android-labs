@@ -14,12 +14,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,6 +63,7 @@ fun HomeScreen(
     val hour = remember(reloadKey, refreshKey) { LocalTime.now().hour }
 
     var sortDescending by remember { mutableStateOf(true) }
+    var subscriptionToDelete by remember { mutableStateOf<Subscription?>(null) }
 
     val activeSubscriptions = subscriptions.filter { it.nextPayment(today) != null }
     val yearStart = LocalDate.of(today.year, 1, 1)
@@ -169,7 +172,7 @@ fun HomeScreen(
                         subscription = subscription,
                         today = today,
                         onClick = { openForm(subscription) },
-                        onLongClick = {},
+                        onLongClick = { subscriptionToDelete = subscription },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
@@ -191,12 +194,36 @@ fun HomeScreen(
                         subscription = subscription,
                         today = today,
                         onClick = { openForm(subscription) },
-                        onLongClick = {},
+                        onLongClick = { subscriptionToDelete = subscription },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
             }
         }
+    }
+
+    subscriptionToDelete?.let { subscription ->
+        AlertDialog(
+            onDismissRequest = { subscriptionToDelete = null },
+            title = { Text(text = "Удалить подписку?") },
+            text = { Text(text = subscription.name) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        repository.deleteSubscription(subscription.id)
+                        subscriptionToDelete = null
+                        reloadKey++
+                    }
+                ) {
+                    Text(text = "Удалить")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { subscriptionToDelete = null }) {
+                    Text(text = "Отмена")
+                }
+            }
+        )
     }
 }
 
