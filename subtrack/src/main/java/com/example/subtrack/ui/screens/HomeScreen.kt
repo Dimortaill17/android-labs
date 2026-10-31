@@ -42,6 +42,8 @@ import com.example.subtrack.SubscriptionFormActivity
 import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.domain.Subscription
+import com.example.subtrack.ui.components.BottomNavBar
+import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SectionHeader
 import com.example.subtrack.ui.components.StatCard
 import com.example.subtrack.ui.components.SubscriptionCard
@@ -102,7 +104,9 @@ fun HomeScreen(
         context.startActivity(intent)
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        bottomBar = { BottomNavBar(currentScreen = Screen.Home) }
+    ) { innerPadding ->
         LazyColumn(
             state = listState,
             modifier = Modifier

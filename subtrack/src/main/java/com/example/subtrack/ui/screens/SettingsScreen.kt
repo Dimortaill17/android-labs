@@ -40,7 +40,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.repository.SettingsRepository
+import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.OptionCard
+import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.theme.CardBorder
 
 private data class ThemeItem(
@@ -72,7 +74,9 @@ fun SettingsScreen(repository: SettingsRepository) {
     var language by remember { mutableStateOf(repository.getLanguage()) }
     var showAboutDialog by remember { mutableStateOf(false) }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        bottomBar = { BottomNavBar(currentScreen = Screen.Settings) }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

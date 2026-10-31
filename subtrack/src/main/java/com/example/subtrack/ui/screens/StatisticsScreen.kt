@@ -36,8 +36,10 @@ import com.example.subtrack.R
 import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.domain.PercentCalculator
+import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.DonutChart
 import com.example.subtrack.ui.components.ExpenseRow
+import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SummaryCard
 import com.example.subtrack.ui.theme.ChartColors
 import java.time.LocalDate
@@ -70,7 +72,9 @@ fun StatisticsScreen(
         emptyList()
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        bottomBar = { BottomNavBar(currentScreen = Screen.Statistics) }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
