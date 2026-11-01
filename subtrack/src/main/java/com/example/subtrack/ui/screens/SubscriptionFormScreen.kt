@@ -163,7 +163,11 @@ fun SubscriptionFormScreen(
 
                 FormTextField(
                     value = price,
-                    onValueChange = { price = it },
+                    onValueChange = { value ->
+                        if (value.length <= 9 && value.all { it.isDigit() || it == '.' || it == ',' }) {
+                            price = value
+                        }
+                    },
                     label = "Стоимость",
                     placeholder = "299",
                     suffix = { Text(text = "₽", fontWeight = FontWeight.Bold) },
