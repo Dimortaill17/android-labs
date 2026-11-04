@@ -28,9 +28,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +46,7 @@ import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.OptionCard
 import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.theme.CardBorder
+import kotlinx.coroutines.launch
 
 private data class ThemeItem(
     val value: String,
@@ -70,8 +73,9 @@ private val languageItems = listOf(
 
 @Composable
 fun SettingsScreen(repository: SettingsRepository) {
-    var theme by remember { mutableStateOf(repository.getTheme()) }
-    var language by remember { mutableStateOf(repository.getLanguage()) }
+    val theme by repository.theme.collectAsState(initial = SettingsRepository.THEME_LIGHT)
+    val language by repository.language.collectAsState(initial = SettingsRepository.LANGUAGE_RU)
+    val coroutineScope = rememberCoroutineScope()
     var showAboutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -99,10 +103,7 @@ fun SettingsScreen(repository: SettingsRepository) {
 
                     OptionCard(
                         selected = selected,
-                        onClick = {
-                            theme = item.value
-                            repository.setTheme(item.value)
-                        },
+                        onClick = { coroutineScope.launch { repository.setTheme(item.value) } },
                         modifier = Modifier
                             .weight(1f)
                             .height(100.dp)
@@ -129,10 +130,7 @@ fun SettingsScreen(repository: SettingsRepository) {
 
                     OptionCard(
                         selected = selected,
-                        onClick = {
-                            language = item.value
-                            repository.setLanguage(item.value)
-                        },
+                        onClick = { coroutineScope.launch { repository.setLanguage(item.value) } },
                         modifier = Modifier
                             .weight(1f)
                             .height(62.dp)

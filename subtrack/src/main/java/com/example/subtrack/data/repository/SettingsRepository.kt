@@ -1,30 +1,38 @@
 package com.example.subtrack.data.repository
 
 import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class SettingsRepository(context: Context) {
-    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+private val Context.settingsDataStore by preferencesDataStore(name = "settings")
 
-    fun getTheme(): String {
-        return prefs.getString(KEY_THEME, THEME_LIGHT) ?: THEME_LIGHT
+class SettingsRepository(private val context: Context) {
+    val theme: Flow<String> = context.settingsDataStore.data.map { preferences ->
+        preferences[KEY_THEME] ?: THEME_LIGHT
     }
 
-    fun setTheme(theme: String) {
-        prefs.edit().putString(KEY_THEME, theme).apply()
+    val language: Flow<String> = context.settingsDataStore.data.map { preferences ->
+        preferences[KEY_LANGUAGE] ?: LANGUAGE_RU
     }
 
-    fun getLanguage(): String {
-        return prefs.getString(KEY_LANGUAGE, LANGUAGE_RU) ?: LANGUAGE_RU
+    suspend fun setTheme(theme: String) {
+        context.settingsDataStore.edit { preferences ->
+            preferences[KEY_THEME] = theme
+        }
     }
 
-    fun setLanguage(language: String) {
-        prefs.edit().putString(KEY_LANGUAGE, language).apply()
+    suspend fun setLanguage(language: String) {
+        context.settingsDataStore.edit { preferences ->
+            preferences[KEY_LANGUAGE] = language
+        }
     }
 
     companion object {
-        private const val PREFS_NAME = "settings_prefs"
-        private const val KEY_THEME = "theme"
-        private const val KEY_LANGUAGE = "language"
+        private val KEY_THEME = stringPreferencesKey("theme")
+        private val KEY_LANGUAGE = stringPreferencesKey("language")
 
         const val THEME_LIGHT = "light"
         const val THEME_DARK = "dark"

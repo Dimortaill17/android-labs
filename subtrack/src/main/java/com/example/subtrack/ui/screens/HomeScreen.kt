@@ -23,8 +23,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,15 +54,11 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun HomeScreen(
-    repository: SubscriptionRepository,
-    refreshKey: Int
-) {
+fun HomeScreen(repository: SubscriptionRepository) {
     val context = LocalContext.current
-    var reloadKey by remember { mutableIntStateOf(0) }
-    val subscriptions = remember(reloadKey, refreshKey) { repository.getSubscriptions() }
-    val today = remember(reloadKey, refreshKey) { LocalDate.now() }
-    val hour = remember(reloadKey, refreshKey) { LocalTime.now().hour }
+    val subscriptions by remember { repository.getSubscriptions() }.collectAsState(initial = emptyList())
+    val today = LocalDate.now()
+    val hour = LocalTime.now().hour
 
     var sortDescending by remember { mutableStateOf(true) }
     var subscriptionToDelete by remember { mutableStateOf<Subscription?>(null) }
@@ -214,9 +210,8 @@ fun HomeScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        repository.deleteSubscription(subscription.id)
+                        coroutineScope.launch { repository.deleteSubscription(subscription.id) }
                         subscriptionToDelete = null
-                        reloadKey++
                     }
                 ) {
                     Text(text = "Удалить")

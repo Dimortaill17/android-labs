@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,12 +47,9 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun StatisticsScreen(
-    repository: SubscriptionRepository,
-    refreshKey: Int
-) {
+fun StatisticsScreen(repository: SubscriptionRepository) {
     var month by remember { mutableStateOf(YearMonth.now()) }
-    val subscriptions = remember(refreshKey) { repository.getSubscriptions() }
+    val subscriptions by remember { repository.getSubscriptions() }.collectAsState(initial = emptyList())
 
     val payments = subscriptions
         .mapNotNull { subscription -> subscription.paymentIn(month)?.let { subscription to it } }
