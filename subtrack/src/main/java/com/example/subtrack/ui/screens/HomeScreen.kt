@@ -23,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,22 +30,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.subtrack.R
 import com.example.subtrack.SubscriptionFormActivity
-import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.BottomNavBar
+import com.example.subtrack.ui.components.PreviewWrapper
 import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SectionHeader
 import com.example.subtrack.ui.components.StatCard
 import com.example.subtrack.ui.components.SubscriptionCard
+import com.example.subtrack.ui.components.sampleSubscriptions
 import com.example.subtrack.ui.theme.HeaderSubtitle
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -54,9 +54,11 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun HomeScreen(repository: SubscriptionRepository) {
+fun HomeScreen(
+    subscriptions: List<Subscription>,
+    onDeleteSubscription: (Subscription) -> Unit
+) {
     val context = LocalContext.current
-    val subscriptions by remember { repository.getSubscriptions() }.collectAsState(initial = emptyList())
     val today = LocalDate.now()
     val hour = LocalTime.now().hour
 
@@ -210,7 +212,7 @@ fun HomeScreen(repository: SubscriptionRepository) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        coroutineScope.launch { repository.deleteSubscription(subscription.id) }
+                        onDeleteSubscription(subscription)
                         subscriptionToDelete = null
                     }
                 ) {
@@ -240,13 +242,13 @@ private fun HomeHeader(
             Text(
                 text = "SUBTRACK",
                 style = MaterialTheme.typography.labelMedium,
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
                 letterSpacing = 2.sp
             )
             Text(
                 text = greeting,
                 style = MaterialTheme.typography.headlineSmall,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(top = 4.dp)
             )
             Text(
@@ -260,8 +262,8 @@ private fun HomeHeader(
         IconButton(
             onClick = onAddClick,
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.White.copy(alpha = 0.15f),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.15f),
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             Icon(
@@ -283,4 +285,15 @@ private fun EmptyListText() {
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 8.dp)
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview() {
+    PreviewWrapper {
+        HomeScreen(
+            subscriptions = sampleSubscriptions,
+            onDeleteSubscription = {}
+        )
+    }
 }

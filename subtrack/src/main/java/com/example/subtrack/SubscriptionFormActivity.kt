@@ -4,31 +4,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.lifecycle.lifecycleScope
-import com.example.subtrack.data.repository.SubscriptionRepository
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.subtrack.ui.components.UiStateContent
 import com.example.subtrack.ui.screens.SubscriptionFormScreen
+import com.example.subtrack.ui.screens.SubscriptionFormViewModel
 import com.example.subtrack.ui.theme.SubTrackTheme
-import kotlinx.coroutines.launch
 
 class SubscriptionFormActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val repository = SubscriptionRepository(this)
-        val subscriptionId = intent.getLongExtra(EXTRA_SUBSCRIPTION_ID, -1L)
-        lifecycleScope.launch {
-            val subscription = repository.getSubscription(subscriptionId)
-            setContent {
-                SubTrackTheme {
+        setContent {
+            SubTrackTheme {
+                val viewModel: SubscriptionFormViewModel = viewModel()
+                val state by viewModel.state.collectAsState()
+                UiStateContent(state = state, onRetry = viewModel::load) { subscription ->
                     SubscriptionFormScreen(
                         subscription = subscription,
                         onBack = { finish() },
-                        onSave = {
-                            lifecycleScope.launch {
-                                repository.saveSubscription(it)
-                                finish()
-                            }
-                        }
+                        onSave = { viewModel.saveSubscription(it) { finish() } }
                     )
                 }
             }

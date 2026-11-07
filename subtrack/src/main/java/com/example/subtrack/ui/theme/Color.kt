@@ -12,7 +12,6 @@ val CardBorder = Color(0xFFE5E2F2)
 val HeaderSubtitle = Color(0xFFE1DEFC)
 val Danger = Color(0xFFEC3C57)
 
-val ChartEmpty = Color(0xFFEEEBFB)
 val ChartColors = listOf(
     Color(0xFF5145CD),
     Color(0xFF7165F0),

@@ -4,18 +4,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.subtrack.data.repository.SettingsRepository
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.subtrack.ui.screens.SettingsScreen
+import com.example.subtrack.ui.screens.SettingsViewModel
 import com.example.subtrack.ui.theme.SubTrackTheme
 
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val repository = SettingsRepository(this)
         setContent {
             SubTrackTheme {
-                SettingsScreen(repository = repository)
+                val viewModel: SettingsViewModel = viewModel()
+                val settings by viewModel.settings.collectAsState()
+                settings?.let {
+                    SettingsScreen(
+                        settings = it,
+                        onThemeChange = viewModel::setTheme,
+                        onLanguageChange = viewModel::setLanguage
+                    )
+                }
             }
         }
     }

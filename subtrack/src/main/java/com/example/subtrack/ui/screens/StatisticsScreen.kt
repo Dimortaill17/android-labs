@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,24 +31,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
-import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.domain.PercentCalculator
+import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.DonutChart
 import com.example.subtrack.ui.components.ExpenseRow
+import com.example.subtrack.ui.components.PreviewWrapper
 import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SummaryCard
+import com.example.subtrack.ui.components.sampleSubscriptions
 import com.example.subtrack.ui.theme.ChartColors
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun StatisticsScreen(repository: SubscriptionRepository) {
+fun StatisticsScreen(subscriptions: List<Subscription>) {
     var month by remember { mutableStateOf(YearMonth.now()) }
-    val subscriptions by remember { repository.getSubscriptions() }.collectAsState(initial = emptyList())
 
     val payments = subscriptions
         .mapNotNull { subscription -> subscription.paymentIn(month)?.let { subscription to it } }
@@ -194,6 +195,14 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StatisticsScreenPreview() {
+    PreviewWrapper {
+        StatisticsScreen(subscriptions = sampleSubscriptions)
     }
 }
 

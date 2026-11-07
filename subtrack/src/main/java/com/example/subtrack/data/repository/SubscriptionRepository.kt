@@ -7,12 +7,15 @@ import com.example.subtrack.data.local.toSubscription
 import com.example.subtrack.domain.Subscription
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 class SubscriptionRepository(context: Context) {
     private val dao = AppDatabase.getInstance(context).subscriptionDao()
 
     fun getSubscriptions(): Flow<List<Subscription>> {
-        return dao.getAll().map { list -> list.map { it.toSubscription() } }
+        return dao.getAll()
+            .map { list -> list.map { it.toSubscription() } }
+            .onEach { cachedSubscriptions = it }
     }
 
     suspend fun getSubscription(id: Long): Subscription? {
@@ -25,5 +28,11 @@ class SubscriptionRepository(context: Context) {
 
     suspend fun deleteSubscription(id: Long) {
         dao.deleteById(id)
+    }
+
+    companion object {
+        @Volatile
+        var cachedSubscriptions: List<Subscription>? = null
+            private set
     }
 }

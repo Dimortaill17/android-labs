@@ -4,18 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.subtrack.data.repository.SubscriptionRepository
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.subtrack.ui.components.UiStateContent
 import com.example.subtrack.ui.screens.StatisticsScreen
+import com.example.subtrack.ui.screens.StatisticsViewModel
 import com.example.subtrack.ui.theme.SubTrackTheme
 
 class StatisticsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val repository = SubscriptionRepository(this)
         setContent {
             SubTrackTheme {
-                StatisticsScreen(repository = repository)
+                val viewModel: StatisticsViewModel = viewModel()
+                val state by viewModel.state.collectAsState()
+                UiStateContent(state = state, onRetry = viewModel::load) { subscriptions ->
+                    StatisticsScreen(subscriptions = subscriptions)
+                }
             }
         }
     }

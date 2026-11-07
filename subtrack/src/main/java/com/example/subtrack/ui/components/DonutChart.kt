@@ -2,6 +2,7 @@ package com.example.subtrack.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -12,7 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.ui.theme.ChartColors
-import com.example.subtrack.ui.theme.ChartEmpty
 
 @Composable
 fun DonutChart(
@@ -21,6 +21,8 @@ fun DonutChart(
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 28.dp
 ) {
+    val emptyColor = MaterialTheme.colorScheme.primaryContainer
+
     Canvas(modifier = modifier) {
         val strokePx = strokeWidth.toPx()
         val topLeft = Offset(strokePx / 2, strokePx / 2)
@@ -28,7 +30,7 @@ fun DonutChart(
 
         if (shares.isEmpty()) {
             drawArc(
-                color = ChartEmpty,
+                color = emptyColor,
                 startAngle = 0f,
                 sweepAngle = 360f,
                 useCenter = false,

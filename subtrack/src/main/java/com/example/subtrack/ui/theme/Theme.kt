@@ -22,6 +22,7 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainer = Color.White,
     surfaceContainerHigh = Color.White,
     surfaceContainerHighest = Color.White,
+    outline = TextHint,
     outlineVariant = CardBorder,
     error = Danger
 )

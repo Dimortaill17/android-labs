@@ -42,12 +42,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
@@ -59,7 +59,8 @@ import com.example.subtrack.ui.components.DateField
 import com.example.subtrack.ui.components.DropdownField
 import com.example.subtrack.ui.components.FormTextField
 import com.example.subtrack.ui.components.OptionCard
-import com.example.subtrack.ui.theme.CardBorder
+import com.example.subtrack.ui.components.PreviewWrapper
+import com.example.subtrack.ui.components.sampleSubscription
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -249,6 +250,18 @@ fun SubscriptionFormScreen(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun SubscriptionFormScreenPreview() {
+    PreviewWrapper {
+        SubscriptionFormScreen(
+            subscription = sampleSubscription,
+            onBack = {},
+            onSave = {}
+        )
+    }
+}
+
 @Composable
 private fun PeriodCard(
     label: String,
@@ -289,8 +302,8 @@ private fun ReminderCard(
 
     Card(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, CardBorder),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(

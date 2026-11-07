@@ -1,6 +1,7 @@
 package com.example.subtrack.ui.components
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
@@ -13,11 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun BottomNavBar(currentScreen: Screen) {
-    val activity = LocalContext.current as Activity
+    val context = LocalContext.current
 
     NavigationBar(
         modifier = Modifier
@@ -27,7 +29,7 @@ fun BottomNavBar(currentScreen: Screen) {
         bottomNavItems.forEach { screen ->
             NavigationBarItem(
                 selected = screen == currentScreen,
-                onClick = { openScreen(activity, currentScreen, screen) },
+                onClick = { openScreen(context, currentScreen, screen) },
                 icon = {
                     Icon(
                         painter = painterResource(screen.icon),
@@ -40,13 +42,21 @@ fun BottomNavBar(currentScreen: Screen) {
     }
 }
 
-private fun openScreen(activity: Activity, current: Screen, target: Screen) {
+private fun openScreen(context: Context, current: Screen, target: Screen) {
     if (current == target) return
 
-    val intent = Intent(activity, target.activity)
+    val intent = Intent(context, target.activity)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    activity.startActivity(intent)
+    context.startActivity(intent)
 
     @Suppress("DEPRECATION")
-    activity.overridePendingTransition(0, 0)
+    (context as? Activity)?.overridePendingTransition(0, 0)
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BottomNavBarPreview() {
+    PreviewWrapper {
+        BottomNavBar(currentScreen = Screen.Home)
+    }
 }

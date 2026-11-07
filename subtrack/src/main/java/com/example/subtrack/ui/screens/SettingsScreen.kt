@@ -28,25 +28,25 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.repository.SettingsRepository
+import com.example.subtrack.domain.AppSettings
 import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.OptionCard
+import com.example.subtrack.ui.components.PreviewWrapper
 import com.example.subtrack.ui.components.Screen
-import com.example.subtrack.ui.theme.CardBorder
-import kotlinx.coroutines.launch
+import com.example.subtrack.ui.components.sampleSettings
 
 private data class ThemeItem(
     val value: String,
@@ -72,10 +72,11 @@ private val languageItems = listOf(
 )
 
 @Composable
-fun SettingsScreen(repository: SettingsRepository) {
-    val theme by repository.theme.collectAsState(initial = SettingsRepository.THEME_LIGHT)
-    val language by repository.language.collectAsState(initial = SettingsRepository.LANGUAGE_RU)
-    val coroutineScope = rememberCoroutineScope()
+fun SettingsScreen(
+    settings: AppSettings,
+    onThemeChange: (String) -> Unit,
+    onLanguageChange: (String) -> Unit
+) {
     var showAboutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -98,12 +99,12 @@ fun SettingsScreen(repository: SettingsRepository) {
             SectionTitle(text = "Внешний вид")
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 themeItems.forEach { item ->
-                    val selected = item.value == theme
+                    val selected = item.value == settings.theme
                     val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
 
                     OptionCard(
                         selected = selected,
-                        onClick = { coroutineScope.launch { repository.setTheme(item.value) } },
+                        onClick = { onThemeChange(item.value) },
                         modifier = Modifier
                             .weight(1f)
                             .height(100.dp)
@@ -126,11 +127,11 @@ fun SettingsScreen(repository: SettingsRepository) {
             SectionTitle(text = "Язык приложения")
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 languageItems.forEach { item ->
-                    val selected = item.value == language
+                    val selected = item.value == settings.language
 
                     OptionCard(
                         selected = selected,
-                        onClick = { coroutineScope.launch { repository.setLanguage(item.value) } },
+                        onClick = { onLanguageChange(item.value) },
                         modifier = Modifier
                             .weight(1f)
                             .height(62.dp)
@@ -146,7 +147,7 @@ fun SettingsScreen(repository: SettingsRepository) {
                                         text = item.code,
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.White
+                                        color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
                             }
@@ -164,8 +165,8 @@ fun SettingsScreen(repository: SettingsRepository) {
             SectionTitle(text = "О приложении")
             Card(
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                border = BorderStroke(1.dp, CardBorder),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 SettingsItem(
@@ -195,6 +196,18 @@ fun SettingsScreen(repository: SettingsRepository) {
                     Text(text = "OK")
                 }
             }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenPreview() {
+    PreviewWrapper {
+        SettingsScreen(
+            settings = sampleSettings,
+            onThemeChange = {},
+            onLanguageChange = {}
         )
     }
 }
