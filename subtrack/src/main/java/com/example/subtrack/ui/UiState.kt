@@ -14,5 +14,5 @@ suspend fun <T> loadUiState(request: suspend () -> T): UiState<T> =
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
-        UiState.Error(e.message ?: "Неизвестная ошибка")
+        UiState.Error(e.message.orEmpty())
     }

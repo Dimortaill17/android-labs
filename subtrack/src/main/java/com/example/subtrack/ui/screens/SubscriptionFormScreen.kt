@@ -51,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.data.utils.serviceColor
 import com.example.subtrack.domain.Categories
 import com.example.subtrack.domain.Reminders
@@ -71,6 +72,9 @@ fun SubscriptionFormScreen(
     onSave: (Subscription) -> Unit
 ) {
     val context = LocalContext.current
+    val nameError = localizedStringResource(R.string.form_error_name)
+    val priceError = localizedStringResource(R.string.form_error_price)
+    val endDateError = localizedStringResource(R.string.form_error_end_date)
 
     var name by remember { mutableStateOf(subscription?.name.orEmpty()) }
     var price by remember { mutableStateOf(subscription?.let { Formats.plain(it.price) }.orEmpty()) }
@@ -88,15 +92,15 @@ fun SubscriptionFormScreen(
         val end = endDate
 
         if (trimmedName.isEmpty()) {
-            Toast.makeText(context, "Введите название сервиса", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, nameError, Toast.LENGTH_SHORT).show()
             return
         }
         if (priceValue == null || priceValue <= 0.0) {
-            Toast.makeText(context, "Введите стоимость", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, priceError, Toast.LENGTH_SHORT).show()
             return
         }
         if (end != null && end.isBefore(startDate)) {
-            Toast.makeText(context, "Дата окончания раньше даты первого платежа", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, endDateError, Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -120,12 +124,15 @@ fun SubscriptionFormScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = if (subscription == null) "Добавить подписку" else "Редактировать подписку") },
+                title = {
+                    val titleRes = if (subscription == null) R.string.form_add_title else R.string.form_edit_title
+                    Text(text = localizedStringResource(titleRes))
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_left),
-                            contentDescription = "Назад"
+                            contentDescription = localizedStringResource(R.string.form_back)
                         )
                     }
                 },
@@ -147,17 +154,17 @@ fun SubscriptionFormScreen(
             FormTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = "Название сервиса",
-                placeholder = "Например, Netflix",
+                label = localizedStringResource(R.string.form_name),
+                placeholder = localizedStringResource(R.string.form_name_placeholder),
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 DropdownField(
-                    label = "Категория",
-                    value = category,
-                    options = Categories.list,
+                    label = localizedStringResource(R.string.form_category),
+                    value = localizedStringResource(Categories.title(category)),
+                    options = Categories.list.map { localizedStringResource(Categories.title(it)) },
                     onSelect = { category = Categories.list[it] },
                     modifier = Modifier.weight(1f)
                 )
@@ -169,7 +176,7 @@ fun SubscriptionFormScreen(
                             price = value
                         }
                     },
-                    label = "Стоимость",
+                    label = localizedStringResource(R.string.form_price),
                     placeholder = "299",
                     suffix = { Text(text = "₽", fontWeight = FontWeight.Bold) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
@@ -178,7 +185,7 @@ fun SubscriptionFormScreen(
             }
 
             Text(
-                text = "Периодичность оплаты",
+                text = localizedStringResource(R.string.form_period),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 4.dp)
@@ -186,13 +193,13 @@ fun SubscriptionFormScreen(
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 PeriodCard(
-                    label = "Ежемесячно",
+                    label = localizedStringResource(R.string.form_monthly),
                     selected = !yearly,
                     onClick = { yearly = false },
                     modifier = Modifier.weight(1f)
                 )
                 PeriodCard(
-                    label = "Ежегодно",
+                    label = localizedStringResource(R.string.form_yearly),
                     selected = yearly,
                     onClick = { yearly = true },
                     modifier = Modifier.weight(1f)
@@ -200,14 +207,14 @@ fun SubscriptionFormScreen(
             }
 
             DateField(
-                label = "Дата первого / ближайшего платежа",
+                label = localizedStringResource(R.string.form_start_date),
                 date = startDate,
                 onDateChange = { date -> if (date != null) startDate = date },
                 modifier = Modifier.fillMaxWidth()
             )
 
             DateField(
-                label = "Повторять до (необязательно)",
+                label = localizedStringResource(R.string.form_end_date),
                 date = endDate,
                 onDateChange = { endDate = it },
                 clearable = true,
@@ -224,8 +231,8 @@ fun SubscriptionFormScreen(
             FormTextField(
                 value = note,
                 onValueChange = { note = it },
-                label = "Заметка (необязательно)",
-                placeholder = "Например, семейная подписка",
+                label = localizedStringResource(R.string.form_note),
+                placeholder = localizedStringResource(R.string.form_note_placeholder),
                 singleLine = false,
                 minLines = 3,
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
@@ -241,7 +248,7 @@ fun SubscriptionFormScreen(
                     .height(56.dp)
             ) {
                 Text(
-                    text = "Сохранить подписку",
+                    text = localizedStringResource(R.string.form_save),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -330,7 +337,7 @@ private fun ReminderCard(
                     .padding(start = 12.dp)
             ) {
                 Text(
-                    text = "Напоминание",
+                    text = localizedStringResource(R.string.form_reminder),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -342,7 +349,7 @@ private fun ReminderCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = Reminders.label(remindDays),
+                            text = localizedStringResource(Reminders.label(remindDays)),
                             style = MaterialTheme.typography.labelLarge,
                             color = if (remind) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -361,7 +368,7 @@ private fun ReminderCard(
                     ) {
                         Reminders.labels.forEachIndexed { index, label ->
                             DropdownMenuItem(
-                                text = { Text(text = label) },
+                                text = { Text(text = localizedStringResource(label)) },
                                 onClick = {
                                     onRemindDaysChange(Reminders.days[index])
                                     expanded = false

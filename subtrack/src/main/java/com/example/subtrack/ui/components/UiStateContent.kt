@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.subtrack.R
+import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.ui.UiState
 
 @Composable
@@ -37,6 +39,7 @@ fun <T> UiStateContent(
         }
 
         is UiState.Error -> {
+            val unknownError = localizedStringResource(R.string.error_unknown)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -46,14 +49,14 @@ fun <T> UiStateContent(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = state.message,
+                    text = state.message.ifBlank { unknownError },
                     textAlign = TextAlign.Center
                 )
                 Button(
                     onClick = onRetry,
                     modifier = Modifier.padding(top = 16.dp)
                 ) {
-                    Text(text = "Повторить")
+                    Text(text = localizedStringResource(R.string.action_retry))
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.example.subtrack.ui.screens
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.repository.SettingsRepository
+import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.domain.AppSettings
 import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.OptionCard
@@ -50,7 +52,7 @@ import com.example.subtrack.ui.components.sampleSettings
 
 private data class ThemeItem(
     val value: String,
-    val label: String,
+    @StringRes val label: Int,
     @DrawableRes val icon: Int
 )
 
@@ -61,9 +63,9 @@ private data class LanguageItem(
 )
 
 private val themeItems = listOf(
-    ThemeItem(SettingsRepository.THEME_LIGHT, "Светлая", R.drawable.ic_sun),
-    ThemeItem(SettingsRepository.THEME_DARK, "Тёмная", R.drawable.ic_moon),
-    ThemeItem(SettingsRepository.THEME_SYSTEM, "Системная", R.drawable.ic_monitor)
+    ThemeItem(SettingsRepository.THEME_LIGHT, R.string.settings_theme_light, R.drawable.ic_sun),
+    ThemeItem(SettingsRepository.THEME_DARK, R.string.settings_theme_dark, R.drawable.ic_moon),
+    ThemeItem(SettingsRepository.THEME_SYSTEM, R.string.settings_theme_system, R.drawable.ic_monitor)
 )
 
 private val languageItems = listOf(
@@ -91,12 +93,12 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Настройки",
+                text = localizedStringResource(R.string.settings_title),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(top = 8.dp)
             )
 
-            SectionTitle(text = "Внешний вид")
+            SectionTitle(text = localizedStringResource(R.string.settings_appearance))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 themeItems.forEach { item ->
                     val selected = item.value == settings.theme
@@ -115,7 +117,7 @@ fun SettingsScreen(
                             tint = color
                         )
                         Text(
-                            text = item.label,
+                            text = localizedStringResource(item.label),
                             style = MaterialTheme.typography.bodySmall,
                             color = color,
                             modifier = Modifier.padding(top = 10.dp)
@@ -124,7 +126,7 @@ fun SettingsScreen(
                 }
             }
 
-            SectionTitle(text = "Язык приложения")
+            SectionTitle(text = localizedStringResource(R.string.settings_language))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 languageItems.forEach { item ->
                     val selected = item.value == settings.language
@@ -162,7 +164,7 @@ fun SettingsScreen(
                 }
             }
 
-            SectionTitle(text = "О приложении")
+            SectionTitle(text = localizedStringResource(R.string.settings_about))
             Card(
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -171,14 +173,14 @@ fun SettingsScreen(
             ) {
                 SettingsItem(
                     icon = R.drawable.ic_info,
-                    text = "О приложении",
+                    text = localizedStringResource(R.string.settings_about),
                     color = MaterialTheme.colorScheme.onSurface,
                     onClick = { showAboutDialog = true }
                 )
                 HorizontalDivider()
                 SettingsItem(
                     icon = R.drawable.ic_trash,
-                    text = "Удалить все данные",
+                    text = localizedStringResource(R.string.settings_delete_all),
                     color = MaterialTheme.colorScheme.error,
                     onClick = {}
                 )
@@ -189,11 +191,11 @@ fun SettingsScreen(
     if (showAboutDialog) {
         AlertDialog(
             onDismissRequest = { showAboutDialog = false },
-            title = { Text(text = "О приложении") },
-            text = { Text(text = "SubTrack. Учёт и контроль платных подписок") },
+            title = { Text(text = localizedStringResource(R.string.settings_about)) },
+            text = { Text(text = localizedStringResource(R.string.settings_about_text)) },
             confirmButton = {
                 TextButton(onClick = { showAboutDialog = false }) {
-                    Text(text = "OK")
+                    Text(text = localizedStringResource(R.string.action_ok))
                 }
             }
         )

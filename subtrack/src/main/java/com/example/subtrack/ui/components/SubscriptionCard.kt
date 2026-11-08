@@ -21,6 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.domain.Categories
 import com.example.subtrack.domain.Subscription
 import java.time.LocalDate
 
@@ -34,6 +36,7 @@ fun SubscriptionCard(
     modifier: Modifier = Modifier
 ) {
     val nextPayment = subscription.nextPayment(today)
+    val categoryTitle = localizedStringResource(Categories.title(subscription.category))
 
     ElevatedCard(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -63,14 +66,14 @@ fun SubscriptionCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = subscription.note.ifBlank { subscription.category },
+                    text = subscription.note.ifBlank { categoryTitle },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = nextPayment?.let { Formats.longDate(it) } ?: "Завершена",
+                    text = nextPayment?.let { Formats.longDate(it) } ?: localizedStringResource(R.string.subscription_finished),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -84,7 +87,7 @@ fun SubscriptionCard(
                 )
                 if (subscription.yearly) {
                     Text(
-                        text = "в год",
+                        text = localizedStringResource(R.string.subscription_per_year),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

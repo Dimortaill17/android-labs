@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.example.subtrack.R
 import com.example.subtrack.SubscriptionFormActivity
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.PreviewWrapper
@@ -75,8 +76,8 @@ fun HomeScreen(
     }
     val nextPaymentText = when (daysUntilPayment) {
         null -> "—"
-        0L -> "Сегодня"
-        else -> "$daysUntilPayment дн."
+        0L -> localizedStringResource(R.string.home_today)
+        else -> localizedStringResource(R.string.home_days_short, daysUntilPayment.toInt())
     }
     val sortedSubscriptions = if (sortDescending) {
         subscriptions.sortedByDescending { it.price }
@@ -84,10 +85,10 @@ fun HomeScreen(
         subscriptions.sortedBy { it.price }
     }
     val greeting = when (hour) {
-        in 5..11 -> "Доброе утро!"
-        in 12..17 -> "Добрый день!"
-        in 18..22 -> "Добрый вечер!"
-        else -> "Доброй ночи!"
+        in 5..11 -> R.string.home_greeting_morning
+        in 12..17 -> R.string.home_greeting_day
+        in 18..22 -> R.string.home_greeting_evening
+        else -> R.string.home_greeting_night
     }
 
     val listState = rememberLazyListState()
@@ -125,7 +126,7 @@ fun HomeScreen(
 
                     Column {
                         HomeHeader(
-                            greeting = greeting,
+                            greeting = localizedStringResource(greeting),
                             onAddClick = { openForm(null) }
                         )
 
@@ -134,19 +135,19 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             StatCard(
-                                label = "Активные подписки",
+                                label = localizedStringResource(R.string.home_active_subscriptions),
                                 value = activeSubscriptions.size.toString(),
                                 icon = R.drawable.ic_wallet,
                                 modifier = Modifier.weight(1f)
                             )
                             StatCard(
-                                label = "Годовые расходы · ${today.year}",
+                                label = localizedStringResource(R.string.home_year_expenses, today.year),
                                 value = Formats.money(yearTotal),
                                 icon = R.drawable.ic_chart,
                                 modifier = Modifier.weight(1f)
                             )
                             StatCard(
-                                label = "Ближайшее списание",
+                                label = localizedStringResource(R.string.home_next_payment),
                                 value = nextPaymentText,
                                 icon = R.drawable.ic_calendar,
                                 modifier = Modifier.weight(1f)
@@ -158,8 +159,8 @@ fun HomeScreen(
 
             item {
                 SectionHeader(
-                    title = "Ближайшие списания",
-                    action = "См. все",
+                    title = localizedStringResource(R.string.home_upcoming_payments),
+                    action = localizedStringResource(R.string.home_see_all),
                     onActionClick = {
                         coroutineScope.launch { listState.animateScrollToItem(allSubscriptionsIndex) }
                     }
@@ -182,8 +183,8 @@ fun HomeScreen(
 
             item {
                 SectionHeader(
-                    title = "Все подписки",
-                    action = if (sortDescending) "Сначала дороже" else "Сначала дешевле",
+                    title = localizedStringResource(R.string.home_all_subscriptions),
+                    action = localizedStringResource(if (sortDescending) R.string.home_sort_descending else R.string.home_sort_ascending),
                     onActionClick = { sortDescending = !sortDescending }
                 )
             }
@@ -207,7 +208,7 @@ fun HomeScreen(
     subscriptionToDelete?.let { subscription ->
         AlertDialog(
             onDismissRequest = { subscriptionToDelete = null },
-            title = { Text(text = "Удалить подписку?") },
+            title = { Text(text = localizedStringResource(R.string.home_delete_title)) },
             text = { Text(text = subscription.name) },
             confirmButton = {
                 TextButton(
@@ -216,12 +217,12 @@ fun HomeScreen(
                         subscriptionToDelete = null
                     }
                 ) {
-                    Text(text = "Удалить")
+                    Text(text = localizedStringResource(R.string.action_delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { subscriptionToDelete = null }) {
-                    Text(text = "Отмена")
+                    Text(text = localizedStringResource(R.string.action_cancel))
                 }
             }
         )
@@ -252,7 +253,7 @@ private fun HomeHeader(
                 modifier = Modifier.padding(top = 4.dp)
             )
             Text(
-                text = "Ваши подписки всегда под контролем",
+                text = localizedStringResource(R.string.home_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = HeaderSubtitle,
                 modifier = Modifier.padding(top = 4.dp)
@@ -268,7 +269,7 @@ private fun HomeHeader(
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_plus),
-                contentDescription = "Добавить подписку"
+                contentDescription = localizedStringResource(R.string.home_add_subscription)
             )
         }
     }
@@ -277,7 +278,7 @@ private fun HomeHeader(
 @Composable
 private fun EmptyListText() {
     Text(
-        text = "Подписок пока нет. Нажмите «+», чтобы добавить.",
+        text = localizedStringResource(R.string.home_empty),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,

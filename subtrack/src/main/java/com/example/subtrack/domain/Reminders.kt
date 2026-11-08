@@ -1,10 +1,18 @@
 package com.example.subtrack.domain
 
+import androidx.annotation.StringRes
+import com.example.subtrack.R
+
 object Reminders {
     val days: List<Int> = listOf(1, 3, 5)
-    val labels: List<String> = listOf("За 1 день", "За 3 дня", "За 5 дней")
+    val labels: List<Int> = listOf(
+        R.string.reminder_1_day,
+        R.string.reminder_3_days,
+        R.string.reminder_5_days
+    )
 
-    fun label(value: Int): String {
+    @StringRes
+    fun label(value: Int): Int {
         val index = days.indexOf(value).coerceAtLeast(0)
         return labels[index]
     }

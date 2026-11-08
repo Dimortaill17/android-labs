@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.subtrack.data.utils.localizedStringResource
 
 @Composable
 fun BottomNavBar(currentScreen: Screen) {
@@ -27,16 +28,17 @@ fun BottomNavBar(currentScreen: Screen) {
             .padding(horizontal = 32.dp)
     ) {
         bottomNavItems.forEach { screen ->
+            val title = localizedStringResource(screen.title)
             NavigationBarItem(
                 selected = screen == currentScreen,
                 onClick = { openScreen(context, currentScreen, screen) },
                 icon = {
                     Icon(
                         painter = painterResource(screen.icon),
-                        contentDescription = screen.title
+                        contentDescription = title
                     )
                 },
-                label = { Text(text = screen.title) }
+                label = { Text(text = title) }
             )
         }
     }

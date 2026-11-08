@@ -34,7 +34,7 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
                 _state.value = UiState.Loading
             }
             repository.getSubscriptions()
-                .catch { _state.value = UiState.Error(it.message ?: "Неизвестная ошибка") }
+                .catch { _state.value = UiState.Error(it.message.orEmpty()) }
                 .collect { _state.value = UiState.Success(it) }
         }
     }

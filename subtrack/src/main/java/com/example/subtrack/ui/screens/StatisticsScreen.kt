@@ -35,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.domain.Categories
 import com.example.subtrack.domain.PercentCalculator
 import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.BottomNavBar
@@ -84,14 +86,14 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Статистика",
+                    text = localizedStringResource(R.string.statistics_title),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = { month = month.minusMonths(1) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_chevron_left),
-                        contentDescription = "Предыдущий месяц",
+                        contentDescription = localizedStringResource(R.string.statistics_previous_month),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -104,7 +106,7 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
                 IconButton(onClick = { month = month.plusMonths(1) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_chevron_right),
-                        contentDescription = "Следующий месяц",
+                        contentDescription = localizedStringResource(R.string.statistics_next_month),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -134,7 +136,7 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "в месяц",
+                                text = localizedStringResource(R.string.subscription_per_month),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -159,13 +161,13 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
                 SummaryCard(
                     icon = R.drawable.ic_wallet,
                     value = Formats.money(monthTotal),
-                    label = "в месяц",
+                    label = localizedStringResource(R.string.subscription_per_month),
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
                     icon = R.drawable.ic_calendar,
                     value = Formats.money(yearTotal),
-                    label = "в год",
+                    label = localizedStringResource(R.string.subscription_per_year),
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -176,7 +178,7 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
-                        text = "Расходы по подпискам",
+                        text = localizedStringResource(R.string.statistics_expenses),
                         style = MaterialTheme.typography.titleMedium
                     )
 
@@ -223,7 +225,7 @@ private fun LegendRow(
                 .background(color)
         )
         Text(
-            text = category,
+            text = localizedStringResource(Categories.title(category)),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .weight(1f)
@@ -240,7 +242,7 @@ private fun LegendRow(
 @Composable
 private fun EmptyMonthText() {
     Text(
-        text = "В этом месяце платежей нет",
+        text = localizedStringResource(R.string.statistics_empty),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
