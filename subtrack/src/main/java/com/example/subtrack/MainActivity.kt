@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.subtrack.ui.components.UiStateContent
 import com.example.subtrack.ui.screens.HomeScreen
 import com.example.subtrack.ui.screens.HomeViewModel
+import com.example.subtrack.ui.screens.SettingsViewModel
 import com.example.subtrack.ui.theme.SubTrackTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,14 +18,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SubTrackTheme {
-                val viewModel: HomeViewModel = viewModel()
-                val state by viewModel.state.collectAsState()
-                UiStateContent(state = state, onRetry = viewModel::load) { subscriptions ->
-                    HomeScreen(
-                        subscriptions = subscriptions,
-                        onDeleteSubscription = viewModel::deleteSubscription
-                    )
+            val settingsViewModel: SettingsViewModel = viewModel()
+            val settings by settingsViewModel.settings.collectAsState()
+            settings?.let { appSettings ->
+                SubTrackTheme(settings = appSettings) {
+                    val viewModel: HomeViewModel = viewModel()
+                    val state by viewModel.state.collectAsState()
+                    UiStateContent(state = state, onRetry = viewModel::load) { subscriptions ->
+                        HomeScreen(
+                            subscriptions = subscriptions,
+                            onDeleteSubscription = viewModel::deleteSubscription
+                        )
+                    }
                 }
             }
         }

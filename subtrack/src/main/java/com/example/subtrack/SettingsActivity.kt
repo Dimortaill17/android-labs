@@ -16,12 +16,12 @@ class SettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SubTrackTheme {
-                val viewModel: SettingsViewModel = viewModel()
-                val settings by viewModel.settings.collectAsState()
-                settings?.let {
+            val viewModel: SettingsViewModel = viewModel()
+            val settings by viewModel.settings.collectAsState()
+            settings?.let { appSettings ->
+                SubTrackTheme(settings = appSettings) {
                     SettingsScreen(
-                        settings = it,
+                        settings = appSettings,
                         onThemeChange = viewModel::setTheme,
                         onLanguageChange = viewModel::setLanguage
                     )

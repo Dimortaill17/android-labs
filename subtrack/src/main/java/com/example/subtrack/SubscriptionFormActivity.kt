@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.subtrack.ui.components.UiStateContent
+import com.example.subtrack.ui.screens.SettingsViewModel
 import com.example.subtrack.ui.screens.SubscriptionFormScreen
 import com.example.subtrack.ui.screens.SubscriptionFormViewModel
 import com.example.subtrack.ui.theme.SubTrackTheme
@@ -17,15 +18,19 @@ class SubscriptionFormActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SubTrackTheme {
-                val viewModel: SubscriptionFormViewModel = viewModel()
-                val state by viewModel.state.collectAsState()
-                UiStateContent(state = state, onRetry = viewModel::load) { subscription ->
-                    SubscriptionFormScreen(
-                        subscription = subscription,
-                        onBack = { finish() },
-                        onSave = { viewModel.saveSubscription(it) { finish() } }
-                    )
+            val settingsViewModel: SettingsViewModel = viewModel()
+            val settings by settingsViewModel.settings.collectAsState()
+            settings?.let { appSettings ->
+                SubTrackTheme(settings = appSettings) {
+                    val viewModel: SubscriptionFormViewModel = viewModel()
+                    val state by viewModel.state.collectAsState()
+                    UiStateContent(state = state, onRetry = viewModel::load) { subscription ->
+                        SubscriptionFormScreen(
+                            subscription = subscription,
+                            onBack = { finish() },
+                            onSave = { viewModel.saveSubscription(it) { finish() } }
+                        )
+                    }
                 }
             }
         }
