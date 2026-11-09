@@ -1,17 +1,23 @@
 package com.example.subtrack.ui.theme
 
 import android.app.Activity
+import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.example.subtrack.data.repository.SettingsRepository
+import com.example.subtrack.data.utils.LocalAppLocale
 import com.example.subtrack.domain.AppSettings
+import java.util.Locale
 
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
@@ -90,8 +96,19 @@ fun SubTrackTheme(
         }
     }
 
-    SubTrackTheme(
-        darkTheme = darkTheme,
-        content = content
-    )
+    val locale = Locale.forLanguageTag(settings.language)
+    val baseConfiguration = LocalConfiguration.current
+    val configuration = remember(baseConfiguration, locale) {
+        Configuration(baseConfiguration).apply { setLocale(locale) }
+    }
+
+    CompositionLocalProvider(
+        LocalAppLocale provides locale,
+        LocalConfiguration provides configuration
+    ) {
+        SubTrackTheme(
+            darkTheme = darkTheme,
+            content = content
+        )
+    }
 }

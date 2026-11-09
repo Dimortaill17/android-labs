@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.LocalAppLocale
 import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.domain.Categories
 import com.example.subtrack.domain.Subscription
@@ -73,7 +74,8 @@ fun SubscriptionCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = nextPayment?.let { Formats.longDate(it) } ?: localizedStringResource(R.string.subscription_finished),
+                    text = nextPayment?.let { Formats.longDate(it, LocalAppLocale.current) }
+                        ?: localizedStringResource(R.string.subscription_finished),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

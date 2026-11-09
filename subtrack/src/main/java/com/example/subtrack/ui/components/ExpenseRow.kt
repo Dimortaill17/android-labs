@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.LocalAppLocale
 import com.example.subtrack.domain.Subscription
 import java.time.LocalDate
 
@@ -51,7 +52,7 @@ fun ExpenseRow(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = Formats.longDate(date),
+                text = Formats.longDate(date, LocalAppLocale.current),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.LocalAppLocale
 import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.domain.Categories
 import com.example.subtrack.domain.PercentCalculator
@@ -98,7 +99,7 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
                     )
                 }
                 Text(
-                    text = Formats.monthTitle(month),
+                    text = Formats.monthTitle(month, LocalAppLocale.current),
                     style = MaterialTheme.typography.labelLarge,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(112.dp)
