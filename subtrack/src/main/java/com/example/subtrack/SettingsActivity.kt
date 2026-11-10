@@ -23,7 +23,8 @@ class SettingsActivity : ComponentActivity() {
                     SettingsScreen(
                         settings = appSettings,
                         onThemeChange = viewModel::setTheme,
-                        onLanguageChange = viewModel::setLanguage
+                        onLanguageChange = viewModel::setLanguage,
+                        onDeleteAllData = viewModel::deleteAllData
                     )
                 }
             }

@@ -87,4 +87,7 @@
     <string name="settings_about">О приложении</string>
     <string name="settings_about_text">SubTrack. Учёт и контроль платных подписок</string>
     <string name="settings_delete_all">Удалить все данные</string>
+    <string name="settings_delete_all_title">Удалить все данные?</string>
+    <string name="settings_delete_all_text">Все подписки будут удалены, а настройки сброшены. Это действие нельзя отменить.</string>
+    <string name="settings_delete_all_done">Все данные удалены</string>
 </resources>

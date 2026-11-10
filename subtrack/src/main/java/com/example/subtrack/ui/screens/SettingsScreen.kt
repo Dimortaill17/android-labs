@@ -1,5 +1,6 @@
 package com.example.subtrack.ui.screens
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
@@ -36,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,9 +79,14 @@ private val languageItems = listOf(
 fun SettingsScreen(
     settings: AppSettings,
     onThemeChange: (String) -> Unit,
-    onLanguageChange: (String) -> Unit
+    onLanguageChange: (String) -> Unit,
+    onDeleteAllData: () -> Unit
 ) {
+    val context = LocalContext.current
+    val deletedMessage = localizedStringResource(R.string.settings_delete_all_done)
+
     var showAboutDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = { BottomNavBar(currentScreen = Screen.Settings) }
@@ -182,7 +189,7 @@ fun SettingsScreen(
                     icon = R.drawable.ic_trash,
                     text = localizedStringResource(R.string.settings_delete_all),
                     color = MaterialTheme.colorScheme.error,
-                    onClick = {}
+                    onClick = { showDeleteDialog = true }
                 )
             }
         }
@@ -200,6 +207,33 @@ fun SettingsScreen(
             }
         )
     }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(text = localizedStringResource(R.string.settings_delete_all_title)) },
+            text = { Text(text = localizedStringResource(R.string.settings_delete_all_text)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDeleteAllData()
+                        showDeleteDialog = false
+                        Toast.makeText(context, deletedMessage, Toast.LENGTH_SHORT).show()
+                    }
+                ) {
+                    Text(
+                        text = localizedStringResource(R.string.action_delete),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(text = localizedStringResource(R.string.action_cancel))
+                }
+            }
+        )
+    }
 }
 
 @Preview(showBackground = true)
@@ -209,7 +243,8 @@ private fun SettingsScreenPreview() {
         SettingsScreen(
             settings = sampleSettings,
             onThemeChange = {},
-            onLanguageChange = {}
+            onLanguageChange = {},
+            onDeleteAllData = {}
         )
     }
 }

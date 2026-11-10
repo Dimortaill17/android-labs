@@ -30,6 +30,10 @@ class SubscriptionRepository(context: Context) {
         dao.deleteById(id)
     }
 
+    suspend fun deleteAllSubscriptions() {
+        dao.deleteAll()
+    }
+
     companion object {
         @Volatile
         var cachedSubscriptions: List<Subscription>? = null

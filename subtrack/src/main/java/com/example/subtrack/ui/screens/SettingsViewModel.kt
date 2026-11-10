@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.subtrack.data.repository.SettingsRepository
+import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.domain.AppSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = SettingsRepository(application)
+    private val subscriptionRepository = SubscriptionRepository(application)
 
     private val _settings = MutableStateFlow(SettingsRepository.cachedSettings)
     val settings: StateFlow<AppSettings?> = _settings.asStateFlow()
@@ -31,6 +33,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun setLanguage(language: String) {
         viewModelScope.launch {
             repository.setLanguage(language)
+        }
+    }
+
+    fun deleteAllData() {
+        viewModelScope.launch {
+            subscriptionRepository.deleteAllSubscriptions()
+            repository.clear()
         }
     }
 }

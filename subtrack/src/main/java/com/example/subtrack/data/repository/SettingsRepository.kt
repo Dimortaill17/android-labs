@@ -31,6 +31,12 @@ class SettingsRepository(private val context: Context) {
         }
     }
 
+    suspend fun clear() {
+        context.settingsDataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
+
     companion object {
         @Volatile
         var cachedSettings: AppSettings? = null

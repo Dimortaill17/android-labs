@@ -85,4 +85,7 @@
     <string name="settings_about">About</string>
     <string name="settings_about_text">SubTrack. Tracking and control of paid subscriptions</string>
     <string name="settings_delete_all">Delete all data</string>
+    <string name="settings_delete_all_title">Delete all data?</string>
+    <string name="settings_delete_all_text">All subscriptions will be deleted and settings will be reset. This action cannot be undone.</string>
+    <string name="settings_delete_all_done">All data deleted</string>
 </resources>
