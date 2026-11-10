@@ -88,4 +88,11 @@
     <string name="settings_delete_all_title">Delete all data?</string>
     <string name="settings_delete_all_text">All subscriptions will be deleted and settings will be reset. This action cannot be undone.</string>
     <string name="settings_delete_all_done">All data deleted</string>
+
+    <string name="notification_channel_name">Payment reminders</string>
+    <string name="notification_channel_description">Notifications about upcoming subscription payments</string>
+    <plurals name="notification_text">
+        <item quantity="one">%2$s will be charged in %1$d day</item>
+        <item quantity="other">%2$s will be charged in %1$d days</item>
+    </plurals>
 </resources>

@@ -90,4 +90,13 @@
     <string name="settings_delete_all_title">Удалить все данные?</string>
     <string name="settings_delete_all_text">Все подписки будут удалены, а настройки сброшены. Это действие нельзя отменить.</string>
     <string name="settings_delete_all_done">Все данные удалены</string>
+
+    <string name="notification_channel_name">Напоминания о списаниях</string>
+    <string name="notification_channel_description">Уведомления о ближайших платежах по подпискам</string>
+    <plurals name="notification_text">
+        <item quantity="one">Через %1$d день спишется %2$s</item>
+        <item quantity="few">Через %1$d дня спишется %2$s</item>
+        <item quantity="many">Через %1$d дней спишется %2$s</item>
+        <item quantity="other">Через %1$d дня спишется %2$s</item>
+    </plurals>
 </resources>

@@ -2,6 +2,7 @@ package com.example.subtrack.domain
 
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.temporal.ChronoUnit
 
 data class Subscription(
     val id: Long,
@@ -33,5 +34,11 @@ data class Subscription(
         return paymentDates()
             .takeWhile { !YearMonth.from(it).isAfter(month) }
             .firstOrNull { YearMonth.from(it) == month }
+    }
+
+    fun shouldRemind(today: LocalDate = LocalDate.now()): Boolean {
+        if (!remind) return false
+        val payment = nextPayment(today) ?: return false
+        return ChronoUnit.DAYS.between(today, payment) == remindDays.toLong()
     }
 }

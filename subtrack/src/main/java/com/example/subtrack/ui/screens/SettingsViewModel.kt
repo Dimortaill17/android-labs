@@ -3,6 +3,8 @@ package com.example.subtrack.ui.screens
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.subtrack.data.notifications.PaymentNotifications
+import com.example.subtrack.data.repository.ReminderRepository
 import com.example.subtrack.data.repository.SettingsRepository
 import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.domain.AppSettings
@@ -14,6 +16,7 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = SettingsRepository(application)
     private val subscriptionRepository = SubscriptionRepository(application)
+    private val reminderRepository = ReminderRepository(application)
 
     private val _settings = MutableStateFlow(SettingsRepository.cachedSettings)
     val settings: StateFlow<AppSettings?> = _settings.asStateFlow()
@@ -39,7 +42,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun deleteAllData() {
         viewModelScope.launch {
             subscriptionRepository.deleteAllSubscriptions()
+            reminderRepository.clear()
             repository.clear()
+            PaymentNotifications.cancelAll(getApplication<Application>())
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.subtrack.SubscriptionFormActivity
+import com.example.subtrack.data.notifications.ReminderScheduler
 import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.UiState
@@ -45,6 +46,7 @@ class SubscriptionFormViewModel(
     fun saveSubscription(subscription: Subscription, onSaved: () -> Unit) {
         viewModelScope.launch {
             repository.saveSubscription(subscription)
+            ReminderScheduler.checkNow(getApplication<Application>())
             onSaved()
         }
     }
