@@ -6,6 +6,8 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.example.subtrack.domain.Categories
+import com.example.subtrack.domain.Category
 import java.util.Locale
 
 fun Context.withLocale(locale: Locale): Context {
@@ -20,4 +22,10 @@ fun localizedStringResource(@StringRes resId: Int, vararg args: Any): String {
     val locale = LocalAppLocale.current
     val localizedContext = remember(context, locale) { context.withLocale(locale) }
     return localizedContext.resources.getString(resId, *args)
+}
+
+@Composable
+fun categoryTitle(category: Category?): String {
+    val titleRes = category?.titleKey?.let { Categories.titleRes(it) }
+    return if (titleRes != null) localizedStringResource(titleRes) else category?.name.orEmpty()
 }

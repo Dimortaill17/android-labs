@@ -9,8 +9,8 @@ import com.example.subtrack.SettingsActivity
 import com.example.subtrack.StatisticsActivity
 
 sealed class Screen(
-    @StringRes val title: Int,
-    @DrawableRes val icon: Int,
+    @param:StringRes val title: Int,
+    @param:DrawableRes val icon: Int,
     val activity: Class<out Activity>
 ) {
     data object Home : Screen(

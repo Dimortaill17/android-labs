@@ -22,8 +22,9 @@ import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.LocalAppLocale
+import com.example.subtrack.data.utils.categoryTitle
 import com.example.subtrack.data.utils.localizedStringResource
-import com.example.subtrack.domain.Categories
+import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.Subscription
 import java.time.LocalDate
 
@@ -31,13 +32,14 @@ import java.time.LocalDate
 @Composable
 fun SubscriptionCard(
     subscription: Subscription,
+    category: Category?,
     today: LocalDate,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val nextPayment = subscription.nextPayment(today)
-    val categoryTitle = localizedStringResource(Categories.title(subscription.category))
+    val categoryTitle = categoryTitle(category)
 
     ElevatedCard(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -114,6 +116,7 @@ private fun SubscriptionCardPreview() {
     PreviewWrapper {
         SubscriptionCard(
             subscription = sampleSubscription,
+            category = sampleCategories.first(),
             today = LocalDate.now(),
             onClick = {},
             onLongClick = {}
@@ -127,6 +130,7 @@ private fun YearlySubscriptionCardPreview() {
     PreviewWrapper {
         SubscriptionCard(
             subscription = sampleYearlySubscription,
+            category = sampleCategories.last(),
             today = LocalDate.now(),
             onClick = {},
             onLongClick = {}

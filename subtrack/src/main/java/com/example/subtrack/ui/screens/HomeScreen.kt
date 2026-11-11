@@ -40,6 +40,7 @@ import com.example.subtrack.R
 import com.example.subtrack.SubscriptionFormActivity
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.PreviewWrapper
@@ -47,6 +48,7 @@ import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SectionHeader
 import com.example.subtrack.ui.components.StatCard
 import com.example.subtrack.ui.components.SubscriptionCard
+import com.example.subtrack.ui.components.sampleCategories
 import com.example.subtrack.ui.components.sampleSubscriptions
 import com.example.subtrack.ui.theme.HeaderSubtitle
 import kotlinx.coroutines.launch
@@ -57,6 +59,7 @@ import java.time.temporal.ChronoUnit
 @Composable
 fun HomeScreen(
     subscriptions: List<Subscription>,
+    categories: List<Category>,
     onDeleteSubscription: (Subscription) -> Unit
 ) {
     val context = LocalContext.current
@@ -79,6 +82,7 @@ fun HomeScreen(
         0L -> localizedStringResource(R.string.home_today)
         else -> localizedStringResource(R.string.home_days_short, daysUntilPayment.toInt())
     }
+    val categoriesById = categories.associateBy { it.id }
     val sortedSubscriptions = if (sortDescending) {
         subscriptions.sortedByDescending { it.price }
     } else {
@@ -173,6 +177,7 @@ fun HomeScreen(
                 items(nearestSubscriptions) { subscription ->
                     SubscriptionCard(
                         subscription = subscription,
+                        category = categoriesById[subscription.categoryId],
                         today = today,
                         onClick = { openForm(subscription) },
                         onLongClick = { subscriptionToDelete = subscription },
@@ -195,6 +200,7 @@ fun HomeScreen(
                 items(sortedSubscriptions) { subscription ->
                     SubscriptionCard(
                         subscription = subscription,
+                        category = categoriesById[subscription.categoryId],
                         today = today,
                         onClick = { openForm(subscription) },
                         onLongClick = { subscriptionToDelete = subscription },
@@ -294,6 +300,7 @@ private fun HomeScreenPreview() {
     PreviewWrapper {
         HomeScreen(
             subscriptions = sampleSubscriptions,
+            categories = sampleCategories,
             onDeleteSubscription = {}
         )
     }

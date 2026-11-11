@@ -40,9 +40,10 @@ class MainActivity : ComponentActivity() {
                 SubTrackTheme(settings = appSettings) {
                     val viewModel: HomeViewModel = viewModel()
                     val state by viewModel.state.collectAsState()
-                    UiStateContent(state = state, onRetry = viewModel::load) { subscriptions ->
+                    UiStateContent(state = state, onRetry = viewModel::load) { data ->
                         HomeScreen(
-                            subscriptions = subscriptions,
+                            subscriptions = data.subscriptions,
+                            categories = data.categories,
                             onDeleteSubscription = viewModel::deleteSubscription
                         )
                     }

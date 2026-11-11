@@ -22,13 +22,3 @@ val TextGrayDark = Color(0xFFA3A0BD)
 val TextHintDark = Color(0xFF6F6C8A)
 val CardBorderDark = Color(0xFF33304A)
 val DangerDark = Color(0xFFFF6B81)
-
-val ChartColors = listOf(
-    Color(0xFF5145CD),
-    Color(0xFF7165F0),
-    Color(0xFFA597F5),
-    Color(0xFFC3B9F9),
-    Color(0xFF3B33A1),
-    Color(0xFF9C8FF3),
-    Color(0xFFD8D2FB)
-)

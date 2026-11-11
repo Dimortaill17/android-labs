@@ -24,8 +24,11 @@ class StatisticsActivity : ComponentActivity() {
                 SubTrackTheme(settings = appSettings) {
                     val viewModel: StatisticsViewModel = viewModel()
                     val state by viewModel.state.collectAsState()
-                    UiStateContent(state = state, onRetry = viewModel::load) { subscriptions ->
-                        StatisticsScreen(subscriptions = subscriptions)
+                    UiStateContent(state = state, onRetry = viewModel::load) { data ->
+                        StatisticsScreen(
+                            subscriptions = data.subscriptions,
+                            categories = data.categories
+                        )
                     }
                 }
             }

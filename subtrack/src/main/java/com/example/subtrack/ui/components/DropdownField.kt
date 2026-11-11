@@ -18,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
-import com.example.subtrack.domain.Categories
 
 @Composable
 fun DropdownField(
@@ -76,7 +75,7 @@ private fun DropdownFieldPreview() {
         DropdownField(
             label = "Категория",
             value = "Музыка",
-            options = Categories.list,
+            options = listOf("Музыка", "Облако", "Дизайн"),
             onSelect = {}
         )
     }

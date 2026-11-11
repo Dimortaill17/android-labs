@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit
 data class Subscription(
     val id: Long,
     val name: String,
-    val category: String,
+    val categoryId: Long,
     val price: Double,
     val yearly: Boolean,
     val startDate: LocalDate,

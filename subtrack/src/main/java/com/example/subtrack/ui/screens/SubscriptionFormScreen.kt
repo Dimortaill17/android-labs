@@ -36,6 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,9 +52,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.categoryTitle
 import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.data.utils.serviceColor
 import com.example.subtrack.domain.Categories
+import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.Reminders
 import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.DateField
@@ -61,6 +64,7 @@ import com.example.subtrack.ui.components.DropdownField
 import com.example.subtrack.ui.components.FormTextField
 import com.example.subtrack.ui.components.OptionCard
 import com.example.subtrack.ui.components.PreviewWrapper
+import com.example.subtrack.ui.components.sampleCategories
 import com.example.subtrack.ui.components.sampleSubscription
 import java.time.LocalDate
 
@@ -68,6 +72,7 @@ import java.time.LocalDate
 @Composable
 fun SubscriptionFormScreen(
     subscription: Subscription?,
+    categories: List<Category>,
     onBack: () -> Unit,
     onSave: (Subscription) -> Unit
 ) {
@@ -79,7 +84,9 @@ fun SubscriptionFormScreen(
     var name by remember { mutableStateOf(subscription?.name.orEmpty()) }
     var price by remember { mutableStateOf(subscription?.let { Formats.plain(it.price) }.orEmpty()) }
     var note by remember { mutableStateOf(subscription?.note.orEmpty()) }
-    var category by remember { mutableStateOf(subscription?.category ?: Categories.list.first()) }
+    var categoryId by remember {
+        mutableLongStateOf(subscription?.categoryId ?: categories.firstOrNull()?.id ?: Categories.OTHER_ID)
+    }
     var yearly by remember { mutableStateOf(subscription?.yearly ?: false) }
     var startDate by remember { mutableStateOf(subscription?.startDate ?: LocalDate.now()) }
     var endDate by remember { mutableStateOf(subscription?.endDate) }
@@ -108,7 +115,7 @@ fun SubscriptionFormScreen(
             Subscription(
                 id = subscription?.id ?: System.currentTimeMillis(),
                 name = trimmedName,
-                category = category,
+                categoryId = categoryId,
                 price = priceValue,
                 yearly = yearly,
                 startDate = startDate,
@@ -163,9 +170,9 @@ fun SubscriptionFormScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 DropdownField(
                     label = localizedStringResource(R.string.form_category),
-                    value = localizedStringResource(Categories.title(category)),
-                    options = Categories.list.map { localizedStringResource(Categories.title(it)) },
-                    onSelect = { category = Categories.list[it] },
+                    value = categoryTitle(categories.find { it.id == categoryId }),
+                    options = categories.map { categoryTitle(it) },
+                    onSelect = { categoryId = categories[it].id },
                     modifier = Modifier.weight(1f)
                 )
 
@@ -263,6 +270,7 @@ private fun SubscriptionFormScreenPreview() {
     PreviewWrapper {
         SubscriptionFormScreen(
             subscription = sampleSubscription,
+            categories = sampleCategories,
             onBack = {},
             onSave = {}
         )

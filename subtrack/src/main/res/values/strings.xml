@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SubTrack</string>
+    <string name="app_name" translatable="false">SubTrack</string>
 
     <string name="nav_home">Главная</string>
     <string name="nav_statistics">Статистика</string>
@@ -90,6 +90,20 @@
     <string name="settings_delete_all_title">Удалить все данные?</string>
     <string name="settings_delete_all_text">Все подписки будут удалены, а настройки сброшены. Это действие нельзя отменить.</string>
     <string name="settings_delete_all_done">Все данные удалены</string>
+
+    <string name="settings_subscriptions">Подписки</string>
+    <string name="settings_categories">Категории</string>
+
+    <string name="categories_title">Категории</string>
+    <string name="categories_add">Добавить категорию</string>
+    <string name="categories_hint">Нажмите на категорию, чтобы переименовать её, выбрать цвет или удалить</string>
+    <string name="category_new">Новая категория</string>
+    <string name="category_edit">Изменить категорию</string>
+    <string name="category_name">Название</string>
+    <string name="category_color">Цвет</string>
+    <string name="category_delete_title">Удалить категорию?</string>
+    <string name="category_delete_text">Категория «%1$s» будет удалена, а её подписки перейдут в категорию «%2$s».</string>
+    <string name="action_save">Сохранить</string>
 
     <string name="notification_channel_name">Напоминания о списаниях</string>
     <string name="notification_channel_description">Уведомления о ближайших платежах по подпискам</string>

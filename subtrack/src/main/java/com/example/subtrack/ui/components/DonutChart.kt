@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.subtrack.ui.theme.ChartColors
 
 @Composable
 fun DonutChart(
@@ -41,13 +40,14 @@ fun DonutChart(
             return@Canvas
         }
 
+        val gap = if (shares.size > 1) 2f else 0f
         var startAngle = -90f
         shares.forEachIndexed { index, share ->
             val sweep = share * 360f
             drawArc(
                 color = colors[index % colors.size],
-                startAngle = startAngle,
-                sweepAngle = sweep,
+                startAngle = startAngle + gap / 2,
+                sweepAngle = (sweep - gap).coerceAtLeast(0.5f),
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
@@ -64,7 +64,7 @@ private fun DonutChartPreview() {
     PreviewWrapper {
         DonutChart(
             shares = listOf(0.5f, 0.3f, 0.2f),
-            colors = ChartColors,
+            colors = sampleCategories.take(3).map { Color(it.color) },
             modifier = Modifier.size(160.dp)
         )
     }

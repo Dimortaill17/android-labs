@@ -36,8 +36,9 @@ import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.LocalAppLocale
+import com.example.subtrack.data.utils.categoryTitle
 import com.example.subtrack.data.utils.localizedStringResource
-import com.example.subtrack.domain.Categories
+import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.PercentCalculator
 import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.BottomNavBar
@@ -46,13 +47,16 @@ import com.example.subtrack.ui.components.ExpenseRow
 import com.example.subtrack.ui.components.PreviewWrapper
 import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SummaryCard
+import com.example.subtrack.ui.components.sampleCategories
 import com.example.subtrack.ui.components.sampleSubscriptions
-import com.example.subtrack.ui.theme.ChartColors
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun StatisticsScreen(subscriptions: List<Subscription>) {
+fun StatisticsScreen(
+    subscriptions: List<Subscription>,
+    categories: List<Category>
+) {
     var month by remember { mutableStateOf(YearMonth.now()) }
 
     val payments = subscriptions
@@ -63,10 +67,14 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
     val yearEnd = LocalDate.of(month.year, 12, 31)
     val yearTotal = subscriptions.sumOf { it.price * it.paymentsBetween(yearStart, yearEnd) }
 
+    val categoriesById = categories.associateBy { it.id }
     val categoryTotals = payments
-        .groupBy { it.first.category }
-        .map { (category, list) -> category to list.sumOf { it.first.price } }
+        .groupBy { it.first.categoryId }
+        .map { (categoryId, list) -> categoriesById[categoryId] to list.sumOf { it.first.price } }
         .sortedByDescending { it.second }
+    val categoryColors = categoryTotals.map { (category, _) ->
+        category?.let { Color(it.color) } ?: MaterialTheme.colorScheme.outline
+    }
     val percents = PercentCalculator.calculate(categoryTotals.map { it.second })
     val shares = if (monthTotal > 0) {
         categoryTotals.map { (it.second / monthTotal).toFloat() }
@@ -127,7 +135,7 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
                     ) {
                         DonutChart(
                             shares = shares,
-                            colors = ChartColors,
+                            colors = categoryColors,
                             modifier = Modifier.fillMaxSize()
                         )
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -149,7 +157,7 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
                     } else {
                         categoryTotals.forEachIndexed { index, (category, _) ->
                             LegendRow(
-                                color = ChartColors[index % ChartColors.size],
+                                color = categoryColors[index],
                                 category = category,
                                 percent = percents[index]
                             )
@@ -205,14 +213,17 @@ fun StatisticsScreen(subscriptions: List<Subscription>) {
 @Composable
 private fun StatisticsScreenPreview() {
     PreviewWrapper {
-        StatisticsScreen(subscriptions = sampleSubscriptions)
+        StatisticsScreen(
+            subscriptions = sampleSubscriptions,
+            categories = sampleCategories
+        )
     }
 }
 
 @Composable
 private fun LegendRow(
     color: Color,
-    category: String,
+    category: Category?,
     percent: Int
 ) {
     Row(
@@ -226,7 +237,7 @@ private fun LegendRow(
                 .background(color)
         )
         Text(
-            text = localizedStringResource(Categories.title(category)),
+            text = categoryTitle(category),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .weight(1f)

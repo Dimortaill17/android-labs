@@ -1,5 +1,6 @@
 package com.example.subtrack.ui.screens
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -42,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.subtrack.CategoriesActivity
 import com.example.subtrack.R
 import com.example.subtrack.data.repository.SettingsRepository
 import com.example.subtrack.data.utils.localizedStringResource
@@ -54,8 +56,8 @@ import com.example.subtrack.ui.components.sampleSettings
 
 private data class ThemeItem(
     val value: String,
-    @StringRes val label: Int,
-    @DrawableRes val icon: Int
+    @param:StringRes val label: Int,
+    @param:DrawableRes val icon: Int
 )
 
 private data class LanguageItem(
@@ -169,6 +171,21 @@ fun SettingsScreen(
                         }
                     }
                 }
+            }
+
+            SectionTitle(text = localizedStringResource(R.string.settings_subscriptions))
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SettingsItem(
+                    icon = R.drawable.ic_tag,
+                    text = localizedStringResource(R.string.settings_categories),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    onClick = { context.startActivity(Intent(context, CategoriesActivity::class.java)) }
+                )
             }
 
             SectionTitle(text = localizedStringResource(R.string.settings_about))

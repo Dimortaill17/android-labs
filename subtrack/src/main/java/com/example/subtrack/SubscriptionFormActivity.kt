@@ -24,9 +24,10 @@ class SubscriptionFormActivity : ComponentActivity() {
                 SubTrackTheme(settings = appSettings) {
                     val viewModel: SubscriptionFormViewModel = viewModel()
                     val state by viewModel.state.collectAsState()
-                    UiStateContent(state = state, onRetry = viewModel::load) { subscription ->
+                    UiStateContent(state = state, onRetry = viewModel::load) { data ->
                         SubscriptionFormScreen(
-                            subscription = subscription,
+                            subscription = data.subscription,
+                            categories = data.categories,
                             onBack = { finish() },
                             onSave = { viewModel.saveSubscription(it) { finish() } }
                         )

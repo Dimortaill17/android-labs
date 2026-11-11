@@ -89,6 +89,20 @@
     <string name="settings_delete_all_text">All subscriptions will be deleted and settings will be reset. This action cannot be undone.</string>
     <string name="settings_delete_all_done">All data deleted</string>
 
+    <string name="settings_subscriptions">Subscriptions</string>
+    <string name="settings_categories">Categories</string>
+
+    <string name="categories_title">Categories</string>
+    <string name="categories_add">Add category</string>
+    <string name="categories_hint">Tap a category to rename it, choose a color or delete it</string>
+    <string name="category_new">New category</string>
+    <string name="category_edit">Edit category</string>
+    <string name="category_name">Name</string>
+    <string name="category_color">Color</string>
+    <string name="category_delete_title">Delete category?</string>
+    <string name="category_delete_text">The category «%1$s» will be deleted and its subscriptions will be moved to «%2$s».</string>
+    <string name="action_save">Save</string>
+
     <string name="notification_channel_name">Payment reminders</string>
     <string name="notification_channel_description">Notifications about upcoming subscription payments</string>
     <plurals name="notification_text">
