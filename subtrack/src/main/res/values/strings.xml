@@ -26,8 +26,6 @@
     <string name="home_upcoming_payments">Ближайшие списания</string>
     <string name="home_see_all">См. все</string>
     <string name="home_all_subscriptions">Все подписки</string>
-    <string name="home_sort_descending">Сначала дороже</string>
-    <string name="home_sort_ascending">Сначала дешевле</string>
     <string name="home_empty">Подписок пока нет. Нажмите «+», чтобы добавить.</string>
     <string name="home_delete_title">Удалить подписку?</string>
 
@@ -91,7 +89,16 @@
     <string name="settings_delete_all_text">Все подписки будут удалены, а настройки сброшены. Это действие нельзя отменить.</string>
     <string name="settings_delete_all_done">Все данные удалены</string>
 
+    <string name="home_sort">Сортировка</string>
+    <string name="sort_price_desc">Сначала дороже</string>
+    <string name="sort_price_asc">Сначала дешевле</string>
+    <string name="sort_date_near">Ближайший платёж</string>
+    <string name="sort_date_far">Дальний платёж</string>
+    <string name="sort_name">По названию</string>
+    <string name="sort_category">По категории</string>
+
     <string name="settings_subscriptions">Подписки</string>
+    <string name="settings_default_sort">Сортировка по умолчанию</string>
     <string name="settings_categories">Категории</string>
 
     <string name="categories_title">Категории</string>

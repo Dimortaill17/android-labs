@@ -24,6 +24,7 @@ class SettingsActivity : ComponentActivity() {
                         settings = appSettings,
                         onThemeChange = viewModel::setTheme,
                         onLanguageChange = viewModel::setLanguage,
+                        onSortOrderChange = viewModel::setSortOrder,
                         onDeleteAllData = viewModel::deleteAllData
                     )
                 }

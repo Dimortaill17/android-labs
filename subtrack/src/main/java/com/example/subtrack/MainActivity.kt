@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(
                             subscriptions = data.subscriptions,
                             categories = data.categories,
+                            defaultSortOrder = appSettings.sortOrder,
                             onDeleteSubscription = viewModel::deleteSubscription
                         )
                     }

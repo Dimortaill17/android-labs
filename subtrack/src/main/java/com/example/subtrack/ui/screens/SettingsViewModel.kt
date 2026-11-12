@@ -9,6 +9,7 @@ import com.example.subtrack.data.repository.ReminderRepository
 import com.example.subtrack.data.repository.SettingsRepository
 import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.domain.AppSettings
+import com.example.subtrack.domain.SortOrder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,6 +39,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun setLanguage(language: String) {
         viewModelScope.launch {
             repository.setLanguage(language)
+        }
+    }
+
+    fun setSortOrder(sortOrder: SortOrder) {
+        viewModelScope.launch {
+            repository.setSortOrder(sortOrder)
         }
     }
 

@@ -24,8 +24,6 @@
     <string name="home_upcoming_payments">Upcoming payments</string>
     <string name="home_see_all">See all</string>
     <string name="home_all_subscriptions">All subscriptions</string>
-    <string name="home_sort_descending">Most expensive</string>
-    <string name="home_sort_ascending">Cheapest first</string>
     <string name="home_empty">No subscriptions yet. Tap «+» to add one.</string>
     <string name="home_delete_title">Delete subscription?</string>
 
@@ -89,7 +87,16 @@
     <string name="settings_delete_all_text">All subscriptions will be deleted and settings will be reset. This action cannot be undone.</string>
     <string name="settings_delete_all_done">All data deleted</string>
 
+    <string name="home_sort">Sort</string>
+    <string name="sort_price_desc">Most expensive first</string>
+    <string name="sort_price_asc">Cheapest first</string>
+    <string name="sort_date_near">Nearest payment</string>
+    <string name="sort_date_far">Latest payment</string>
+    <string name="sort_name">By name</string>
+    <string name="sort_category">By category</string>
+
     <string name="settings_subscriptions">Subscriptions</string>
+    <string name="settings_default_sort">Default sorting</string>
     <string name="settings_categories">Categories</string>
 
     <string name="categories_title">Categories</string>

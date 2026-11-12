@@ -22,6 +22,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -42,12 +44,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.CategoriesActivity
 import com.example.subtrack.R
 import com.example.subtrack.data.repository.SettingsRepository
 import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.domain.AppSettings
+import com.example.subtrack.domain.SortOrder
 import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.OptionCard
 import com.example.subtrack.ui.components.PreviewWrapper
@@ -82,6 +86,7 @@ fun SettingsScreen(
     settings: AppSettings,
     onThemeChange: (String) -> Unit,
     onLanguageChange: (String) -> Unit,
+    onSortOrderChange: (SortOrder) -> Unit,
     onDeleteAllData: () -> Unit
 ) {
     val context = LocalContext.current
@@ -89,6 +94,7 @@ fun SettingsScreen(
 
     var showAboutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showSortMenu by remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = { BottomNavBar(currentScreen = Screen.Settings) }
@@ -180,6 +186,41 @@ fun SettingsScreen(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                 modifier = Modifier.fillMaxWidth()
             ) {
+                Box {
+                    SettingsItem(
+                        icon = R.drawable.ic_sort,
+                        text = localizedStringResource(R.string.settings_default_sort),
+                        supportingText = localizedStringResource(settings.sortOrder.title),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        onClick = { showSortMenu = true }
+                    )
+                    DropdownMenu(
+                        expanded = showSortMenu,
+                        onDismissRequest = { showSortMenu = false },
+                        offset = DpOffset(x = 72.dp, y = 0.dp)
+                    ) {
+                        SortOrder.entries.forEach { order ->
+                            DropdownMenuItem(
+                                text = { Text(text = localizedStringResource(order.title)) },
+                                onClick = {
+                                    onSortOrderChange(order)
+                                    showSortMenu = false
+                                },
+                                trailingIcon = {
+                                    if (order == settings.sortOrder) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_check),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+                HorizontalDivider()
                 SettingsItem(
                     icon = R.drawable.ic_tag,
                     text = localizedStringResource(R.string.settings_categories),
@@ -261,6 +302,7 @@ private fun SettingsScreenPreview() {
             settings = sampleSettings,
             onThemeChange = {},
             onLanguageChange = {},
+            onSortOrderChange = {},
             onDeleteAllData = {}
         )
     }
@@ -280,7 +322,8 @@ private fun SettingsItem(
     @DrawableRes icon: Int,
     text: String,
     color: Color,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    supportingText: String? = null
 ) {
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
@@ -306,6 +349,11 @@ private fun SettingsItem(
                 fontWeight = FontWeight.Bold,
                 color = color
             )
+        },
+        supportingContent = if (supportingText != null) {
+            { Text(text = supportingText) }
+        } else {
+            null
         },
         trailingContent = {
             Icon(

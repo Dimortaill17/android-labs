@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -39,13 +40,17 @@ import androidx.compose.ui.unit.sp
 import com.example.subtrack.R
 import com.example.subtrack.SubscriptionFormActivity
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.categoryTitle
 import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.domain.Category
+import com.example.subtrack.domain.SortOrder
 import com.example.subtrack.domain.Subscription
+import com.example.subtrack.domain.SubscriptionSorter
 import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.PreviewWrapper
 import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SectionHeader
+import com.example.subtrack.ui.components.SortMenu
 import com.example.subtrack.ui.components.StatCard
 import com.example.subtrack.ui.components.SubscriptionCard
 import com.example.subtrack.ui.components.sampleCategories
@@ -60,13 +65,14 @@ import java.time.temporal.ChronoUnit
 fun HomeScreen(
     subscriptions: List<Subscription>,
     categories: List<Category>,
+    defaultSortOrder: SortOrder,
     onDeleteSubscription: (Subscription) -> Unit
 ) {
     val context = LocalContext.current
     val today = LocalDate.now()
     val hour = LocalTime.now().hour
 
-    var sortDescending by remember { mutableStateOf(true) }
+    var sortOrder by remember(defaultSortOrder) { mutableStateOf(defaultSortOrder) }
     var subscriptionToDelete by remember { mutableStateOf<Subscription?>(null) }
 
     val activeSubscriptions = subscriptions.filter { it.nextPayment(today) != null }
@@ -83,11 +89,8 @@ fun HomeScreen(
         else -> localizedStringResource(R.string.home_days_short, daysUntilPayment.toInt())
     }
     val categoriesById = categories.associateBy { it.id }
-    val sortedSubscriptions = if (sortDescending) {
-        subscriptions.sortedByDescending { it.price }
-    } else {
-        subscriptions.sortedBy { it.price }
-    }
+    val categoryTitles = categories.associate { it.id to categoryTitle(it) }
+    val sortedSubscriptions = SubscriptionSorter.sort(subscriptions, sortOrder, today, categoryTitles)
     val greeting = when (hour) {
         in 5..11 -> R.string.home_greeting_morning
         in 12..17 -> R.string.home_greeting_day
@@ -162,13 +165,20 @@ fun HomeScreen(
             }
 
             item {
-                SectionHeader(
-                    title = localizedStringResource(R.string.home_upcoming_payments),
-                    action = localizedStringResource(R.string.home_see_all),
-                    onActionClick = {
-                        coroutineScope.launch { listState.animateScrollToItem(allSubscriptionsIndex) }
+                SectionHeader(title = localizedStringResource(R.string.home_upcoming_payments)) {
+                    TextButton(
+                        onClick = {
+                            coroutineScope.launch { listState.animateScrollToItem(allSubscriptionsIndex) }
+                        }
+                    ) {
+                        Text(text = localizedStringResource(R.string.home_see_all))
+                        Icon(
+                            painter = painterResource(R.drawable.ic_chevron_right),
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
                     }
-                )
+                }
             }
 
             if (nearestSubscriptions.isEmpty()) {
@@ -187,11 +197,12 @@ fun HomeScreen(
             }
 
             item {
-                SectionHeader(
-                    title = localizedStringResource(R.string.home_all_subscriptions),
-                    action = localizedStringResource(if (sortDescending) R.string.home_sort_descending else R.string.home_sort_ascending),
-                    onActionClick = { sortDescending = !sortDescending }
-                )
+                SectionHeader(title = localizedStringResource(R.string.home_all_subscriptions)) {
+                    SortMenu(
+                        selected = sortOrder,
+                        onSelect = { sortOrder = it }
+                    )
+                }
             }
 
             if (sortedSubscriptions.isEmpty()) {
@@ -301,6 +312,7 @@ private fun HomeScreenPreview() {
         HomeScreen(
             subscriptions = sampleSubscriptions,
             categories = sampleCategories,
+            defaultSortOrder = SortOrder.PRICE_DESC,
             onDeleteSubscription = {}
         )
     }

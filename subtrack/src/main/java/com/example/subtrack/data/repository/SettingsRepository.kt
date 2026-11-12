@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.subtrack.domain.AppSettings
+import com.example.subtrack.domain.SortOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -15,7 +16,8 @@ class SettingsRepository(private val context: Context) {
     val settings: Flow<AppSettings> = context.settingsDataStore.data.map { preferences ->
         AppSettings(
             theme = preferences[KEY_THEME] ?: THEME_LIGHT,
-            language = preferences[KEY_LANGUAGE] ?: LANGUAGE_RU
+            language = preferences[KEY_LANGUAGE] ?: LANGUAGE_RU,
+            sortOrder = SortOrder.entries.find { it.name == preferences[KEY_SORT_ORDER] } ?: SortOrder.PRICE_DESC
         )
     }.onEach { cachedSettings = it }
 
@@ -28,6 +30,12 @@ class SettingsRepository(private val context: Context) {
     suspend fun setLanguage(language: String) {
         context.settingsDataStore.edit { preferences ->
             preferences[KEY_LANGUAGE] = language
+        }
+    }
+
+    suspend fun setSortOrder(sortOrder: SortOrder) {
+        context.settingsDataStore.edit { preferences ->
+            preferences[KEY_SORT_ORDER] = sortOrder.name
         }
     }
 
@@ -44,6 +52,7 @@ class SettingsRepository(private val context: Context) {
 
         private val KEY_THEME = stringPreferencesKey("theme")
         private val KEY_LANGUAGE = stringPreferencesKey("language")
+        private val KEY_SORT_ORDER = stringPreferencesKey("sort_order")
 
         const val THEME_LIGHT = "light"
         const val THEME_DARK = "dark"
