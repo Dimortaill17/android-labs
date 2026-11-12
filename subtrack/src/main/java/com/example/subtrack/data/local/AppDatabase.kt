@@ -13,14 +13,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [SubscriptionEntity::class, CategoryEntity::class],
-    version = 2,
+    entities = [SubscriptionEntity::class, CategoryEntity::class, PaymentEntity::class],
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun paymentDao(): PaymentDao
 
     companion object {
         @Volatile

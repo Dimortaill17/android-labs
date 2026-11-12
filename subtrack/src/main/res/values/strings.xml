@@ -112,6 +112,20 @@
     <string name="category_delete_text">Категория «%1$s» будет удалена, а её подписки перейдут в категорию «%2$s».</string>
     <string name="action_save">Сохранить</string>
 
+    <string name="history_title">История платежей</string>
+    <string name="history_hint">Нажмите на платёж, чтобы отметить, прошла ли оплата</string>
+    <string name="history_paid_total">Всего оплачено</string>
+    <string name="history_count_paid">Оплачено</string>
+    <string name="history_count_failed">Не прошло</string>
+    <string name="history_count_missed">Пропущено</string>
+    <string name="payment_status_paid">Оплачено</string>
+    <string name="payment_status_failed">Не прошла</string>
+    <string name="payment_status_missed">Пропущено</string>
+    <string name="payment_status_upcoming">Ожидается</string>
+    <string name="payment_mark_paid">Отметить «Оплачено»</string>
+    <string name="payment_mark_failed">Отметить «Не прошла»</string>
+    <string name="payment_mark_clear">Снять отметку</string>
+
     <string name="notification_channel_name">Напоминания о списаниях</string>
     <string name="notification_channel_description">Уведомления о ближайших платежах по подпискам</string>
     <plurals name="notification_text">

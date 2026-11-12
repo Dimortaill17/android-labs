@@ -30,6 +30,10 @@ data class Subscription(
         return paymentDates().takeWhile { !it.isAfter(to) }.count { !it.isBefore(from) }
     }
 
+    fun paymentsUntil(to: LocalDate): List<LocalDate> {
+        return paymentDates().takeWhile { !it.isAfter(to) }.toList()
+    }
+
     fun paymentIn(month: YearMonth): LocalDate? {
         return paymentDates()
             .takeWhile { !YearMonth.from(it).isAfter(month) }

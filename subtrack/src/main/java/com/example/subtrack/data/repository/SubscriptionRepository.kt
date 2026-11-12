@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.onEach
 
 class SubscriptionRepository(context: Context) {
     private val dao = AppDatabase.getInstance(context).subscriptionDao()
+    private val paymentDao = AppDatabase.getInstance(context).paymentDao()
 
     fun getSubscriptions(): Flow<List<Subscription>> {
         return dao.getAll()
@@ -28,10 +29,12 @@ class SubscriptionRepository(context: Context) {
 
     suspend fun deleteSubscription(id: Long) {
         dao.deleteById(id)
+        paymentDao.deleteBySubscription(id)
     }
 
     suspend fun deleteAllSubscriptions() {
         dao.deleteAll()
+        paymentDao.deleteAll()
     }
 
     companion object {

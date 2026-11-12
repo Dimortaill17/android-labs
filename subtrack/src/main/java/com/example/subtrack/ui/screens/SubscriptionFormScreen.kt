@@ -1,5 +1,6 @@
 package com.example.subtrack.ui.screens
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.subtrack.PaymentHistoryActivity
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.categoryTitle
@@ -92,6 +94,12 @@ fun SubscriptionFormScreen(
     var endDate by remember { mutableStateOf(subscription?.endDate) }
     var remind by remember { mutableStateOf(subscription?.remind ?: true) }
     var remindDays by remember { mutableIntStateOf(subscription?.remindDays ?: 3) }
+
+    fun openHistory(subscription: Subscription) {
+        val intent = Intent(context, PaymentHistoryActivity::class.java)
+        intent.putExtra(PaymentHistoryActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
+        context.startActivity(intent)
+    }
 
     fun save() {
         val trimmedName = name.trim()
@@ -141,6 +149,16 @@ fun SubscriptionFormScreen(
                             painter = painterResource(R.drawable.ic_arrow_left),
                             contentDescription = localizedStringResource(R.string.form_back)
                         )
+                    }
+                },
+                actions = {
+                    if (subscription != null) {
+                        IconButton(onClick = { openHistory(subscription) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_history),
+                                contentDescription = localizedStringResource(R.string.history_title)
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

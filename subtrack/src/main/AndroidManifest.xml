@@ -41,5 +41,10 @@
             android:name=".CategoriesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PaymentHistoryActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

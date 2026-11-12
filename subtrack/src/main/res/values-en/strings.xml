@@ -110,6 +110,20 @@
     <string name="category_delete_text">The category «%1$s» will be deleted and its subscriptions will be moved to «%2$s».</string>
     <string name="action_save">Save</string>
 
+    <string name="history_title">Payment history</string>
+    <string name="history_hint">Tap a payment to mark whether it went through</string>
+    <string name="history_paid_total">Total paid</string>
+    <string name="history_count_paid">Paid</string>
+    <string name="history_count_failed">Failed</string>
+    <string name="history_count_missed">Missed</string>
+    <string name="payment_status_paid">Paid</string>
+    <string name="payment_status_failed">Failed</string>
+    <string name="payment_status_missed">Missed</string>
+    <string name="payment_status_upcoming">Upcoming</string>
+    <string name="payment_mark_paid">Mark as paid</string>
+    <string name="payment_mark_failed">Mark as failed</string>
+    <string name="payment_mark_clear">Clear mark</string>
+
     <string name="notification_channel_name">Payment reminders</string>
     <string name="notification_channel_description">Notifications about upcoming subscription payments</string>
     <plurals name="notification_text">

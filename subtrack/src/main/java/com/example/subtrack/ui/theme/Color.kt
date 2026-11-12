@@ -22,3 +22,6 @@ val TextGrayDark = Color(0xFFA3A0BD)
 val TextHintDark = Color(0xFF6F6C8A)
 val CardBorderDark = Color(0xFF33304A)
 val DangerDark = Color(0xFFFF6B81)
+
+val Paid = Color(0xFF1F9D57)
+val Missed = Color(0xFFE08A00)
