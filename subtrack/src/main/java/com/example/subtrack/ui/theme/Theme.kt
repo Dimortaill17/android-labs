@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.example.subtrack.data.repository.SettingsRepository
 import com.example.subtrack.data.utils.LocalAppLocale
+import com.example.subtrack.data.utils.LocalHideAmounts
 import com.example.subtrack.domain.AppSettings
 import java.util.Locale
 
@@ -104,6 +105,7 @@ fun SubTrackTheme(
 
     CompositionLocalProvider(
         LocalAppLocale provides locale,
+        LocalHideAmounts provides settings.hideAmounts,
         LocalConfiguration provides configuration
     ) {
         SubTrackTheme(

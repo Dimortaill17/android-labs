@@ -24,5 +24,6 @@ val sampleCategories: List<Category> = Categories.defaults
 val sampleSettings = AppSettings(
     theme = SettingsRepository.THEME_LIGHT,
     language = SettingsRepository.LANGUAGE_RU,
-    sortOrder = SortOrder.PRICE_DESC
+    sortOrder = SortOrder.PRICE_DESC,
+    hideAmounts = false
 )

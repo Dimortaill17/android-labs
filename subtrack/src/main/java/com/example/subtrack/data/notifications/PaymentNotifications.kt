@@ -26,7 +26,7 @@ object PaymentNotifications {
         NotificationManagerCompat.from(context).createNotificationChannel(channel)
     }
 
-    fun show(context: Context, subscription: Subscription): Boolean {
+    fun show(context: Context, subscription: Subscription, hideAmounts: Boolean): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -41,7 +41,7 @@ object PaymentNotifications {
             R.plurals.notification_text,
             subscription.remindDays,
             subscription.remindDays,
-            Formats.money(subscription.price)
+            if (hideAmounts) Formats.HIDDEN_AMOUNT else Formats.money(subscription.price)
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)

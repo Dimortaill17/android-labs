@@ -39,9 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.subtrack.R
 import com.example.subtrack.SubscriptionFormActivity
-import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.categoryTitle
 import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.data.utils.moneyText
 import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.SortOrder
 import com.example.subtrack.domain.Subscription
@@ -149,7 +149,7 @@ fun HomeScreen(
                             )
                             StatCard(
                                 label = localizedStringResource(R.string.home_year_expenses, today.year),
-                                value = Formats.money(yearTotal),
+                                value = moneyText(yearTotal),
                                 icon = R.drawable.ic_chart,
                                 modifier = Modifier.weight(1f)
                             )

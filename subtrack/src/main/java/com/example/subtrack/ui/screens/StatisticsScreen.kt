@@ -38,6 +38,7 @@ import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.LocalAppLocale
 import com.example.subtrack.data.utils.categoryTitle
 import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.data.utils.moneyText
 import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.PercentCalculator
 import com.example.subtrack.domain.Subscription
@@ -140,7 +141,7 @@ fun StatisticsScreen(
                         )
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = Formats.money(monthTotal),
+                                text = moneyText(monthTotal),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -169,13 +170,13 @@ fun StatisticsScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SummaryCard(
                     icon = R.drawable.ic_wallet,
-                    value = Formats.money(monthTotal),
+                    value = moneyText(monthTotal),
                     label = localizedStringResource(R.string.subscription_per_month),
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
                     icon = R.drawable.ic_calendar,
-                    value = Formats.money(yearTotal),
+                    value = moneyText(yearTotal),
                     label = localizedStringResource(R.string.subscription_per_year),
                     modifier = Modifier.weight(1f)
                 )

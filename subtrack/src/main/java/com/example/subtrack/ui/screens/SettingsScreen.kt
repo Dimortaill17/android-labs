@@ -30,6 +30,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -87,6 +88,7 @@ fun SettingsScreen(
     onThemeChange: (String) -> Unit,
     onLanguageChange: (String) -> Unit,
     onSortOrderChange: (SortOrder) -> Unit,
+    onHideAmountsChange: (Boolean) -> Unit,
     onDeleteAllData: () -> Unit
 ) {
     val context = LocalContext.current
@@ -227,6 +229,20 @@ fun SettingsScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                     onClick = { context.startActivity(Intent(context, CategoriesActivity::class.java)) }
                 )
+                HorizontalDivider()
+                SettingsItem(
+                    icon = R.drawable.ic_eye_off,
+                    text = localizedStringResource(R.string.settings_hide_amounts),
+                    supportingText = localizedStringResource(R.string.settings_hide_amounts_hint),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    onClick = { onHideAmountsChange(!settings.hideAmounts) },
+                    trailing = {
+                        Switch(
+                            checked = settings.hideAmounts,
+                            onCheckedChange = onHideAmountsChange
+                        )
+                    }
+                )
             }
 
             SectionTitle(text = localizedStringResource(R.string.settings_about))
@@ -303,6 +319,7 @@ private fun SettingsScreenPreview() {
             onThemeChange = {},
             onLanguageChange = {},
             onSortOrderChange = {},
+            onHideAmountsChange = {},
             onDeleteAllData = {}
         )
     }
@@ -323,7 +340,15 @@ private fun SettingsItem(
     text: String,
     color: Color,
     onClick: () -> Unit,
-    supportingText: String? = null
+    supportingText: String? = null,
+    trailing: @Composable () -> Unit = {
+        Icon(
+            painter = painterResource(R.drawable.ic_chevron_right),
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(18.dp)
+        )
+    }
 ) {
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
@@ -355,13 +380,6 @@ private fun SettingsItem(
         } else {
             null
         },
-        trailingContent = {
-            Icon(
-                painter = painterResource(R.drawable.ic_chevron_right),
-                contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(18.dp)
-            )
-        }
+        trailingContent = trailing
     )
 }

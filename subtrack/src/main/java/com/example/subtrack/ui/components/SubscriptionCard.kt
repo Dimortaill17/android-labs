@@ -24,6 +24,7 @@ import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.LocalAppLocale
 import com.example.subtrack.data.utils.categoryTitle
 import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.data.utils.moneyText
 import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.Subscription
 import java.time.LocalDate
@@ -85,7 +86,7 @@ fun SubscriptionCard(
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = Formats.money(subscription.price),
+                    text = moneyText(subscription.price),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )

@@ -48,6 +48,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun setHideAmounts(hideAmounts: Boolean) {
+        viewModelScope.launch {
+            repository.setHideAmounts(hideAmounts)
+        }
+    }
+
     fun deleteAllData() {
         viewModelScope.launch {
             subscriptionRepository.deleteAllSubscriptions()

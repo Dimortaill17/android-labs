@@ -1,6 +1,7 @@
 package com.example.subtrack.data.repository
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -17,7 +18,8 @@ class SettingsRepository(private val context: Context) {
         AppSettings(
             theme = preferences[KEY_THEME] ?: THEME_LIGHT,
             language = preferences[KEY_LANGUAGE] ?: LANGUAGE_RU,
-            sortOrder = SortOrder.entries.find { it.name == preferences[KEY_SORT_ORDER] } ?: SortOrder.PRICE_DESC
+            sortOrder = SortOrder.entries.find { it.name == preferences[KEY_SORT_ORDER] } ?: SortOrder.PRICE_DESC,
+            hideAmounts = preferences[KEY_HIDE_AMOUNTS] ?: false
         )
     }.onEach { cachedSettings = it }
 
@@ -39,6 +41,12 @@ class SettingsRepository(private val context: Context) {
         }
     }
 
+    suspend fun setHideAmounts(hideAmounts: Boolean) {
+        context.settingsDataStore.edit { preferences ->
+            preferences[KEY_HIDE_AMOUNTS] = hideAmounts
+        }
+    }
+
     suspend fun clear() {
         context.settingsDataStore.edit { preferences ->
             preferences.clear()
@@ -53,6 +61,7 @@ class SettingsRepository(private val context: Context) {
         private val KEY_THEME = stringPreferencesKey("theme")
         private val KEY_LANGUAGE = stringPreferencesKey("language")
         private val KEY_SORT_ORDER = stringPreferencesKey("sort_order")
+        private val KEY_HIDE_AMOUNTS = booleanPreferencesKey("hide_amounts")
 
         const val THEME_LIGHT = "light"
         const val THEME_DARK = "dark"

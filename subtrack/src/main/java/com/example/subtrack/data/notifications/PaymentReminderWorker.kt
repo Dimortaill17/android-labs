@@ -30,7 +30,7 @@ class PaymentReminderWorker(
             .forEach { subscription ->
                 val paymentDate = subscription.nextPayment(today) ?: return@forEach
                 val key = Reminders.key(subscription.id, paymentDate)
-                if (key !in sentReminders && PaymentNotifications.show(localizedContext, subscription)) {
+                if (key !in sentReminders && PaymentNotifications.show(localizedContext, subscription, settings.hideAmounts)) {
                     sentReminders.add(key)
                 }
             }

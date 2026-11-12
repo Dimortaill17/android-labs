@@ -40,6 +40,7 @@ import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.LocalAppLocale
 import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.data.utils.moneyText
 import com.example.subtrack.domain.Payment
 import com.example.subtrack.domain.PaymentStatus
 import com.example.subtrack.domain.Subscription
@@ -104,7 +105,7 @@ fun PaymentHistoryScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = Formats.money(paidCount * subscription.price),
+                            text = moneyText(paidCount * subscription.price),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
@@ -201,7 +202,7 @@ private fun PaymentItem(
                         fontWeight = FontWeight.Bold
                     )
                 },
-                supportingContent = { Text(text = Formats.money(price)) },
+                supportingContent = { Text(text = moneyText(price)) },
                 trailingContent = { StatusLabel(status = payment.status) }
             )
         }

@@ -98,6 +98,8 @@
     <string name="settings_subscriptions">Subscriptions</string>
     <string name="settings_default_sort">Default sorting</string>
     <string name="settings_categories">Categories</string>
+    <string name="settings_hide_amounts">Hide amounts</string>
+    <string name="settings_hide_amounts_hint">Show ••• instead of amounts</string>
 
     <string name="categories_title">Categories</string>
     <string name="categories_add">Add category</string>

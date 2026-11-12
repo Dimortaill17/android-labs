@@ -8,6 +8,8 @@ import java.time.format.FormatStyle
 import java.util.Locale
 
 object Formats {
+    const val HIDDEN_AMOUNT = "••• ₽"
+
     private val russian = Locale.forLanguageTag("ru-RU")
     private val moneyFormat = NumberFormat.getNumberInstance(russian).apply { maximumFractionDigits = 2 }
     private val inputDateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy")
