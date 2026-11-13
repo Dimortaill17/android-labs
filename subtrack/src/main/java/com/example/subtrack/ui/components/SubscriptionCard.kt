@@ -21,6 +21,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.LocalAppLocale
+import com.example.subtrack.data.utils.categoryTitle
+import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.data.utils.moneyText
+import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.Subscription
 import java.time.LocalDate
 
@@ -28,12 +33,14 @@ import java.time.LocalDate
 @Composable
 fun SubscriptionCard(
     subscription: Subscription,
+    category: Category?,
     today: LocalDate,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val nextPayment = subscription.nextPayment(today)
+    val categoryTitle = categoryTitle(category)
 
     ElevatedCard(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -63,14 +70,15 @@ fun SubscriptionCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = subscription.note.ifBlank { subscription.category },
+                    text = subscription.note.ifBlank { categoryTitle },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = nextPayment?.let { Formats.longDate(it) } ?: "Завершена",
+                    text = nextPayment?.let { Formats.longDate(it, LocalAppLocale.current) }
+                        ?: localizedStringResource(R.string.subscription_finished),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -78,13 +86,13 @@ fun SubscriptionCard(
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = Formats.money(subscription.price),
+                    text = moneyText(subscription.price),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 if (subscription.yearly) {
                     Text(
-                        text = "в год",
+                        text = localizedStringResource(R.string.subscription_per_year),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -109,6 +117,7 @@ private fun SubscriptionCardPreview() {
     PreviewWrapper {
         SubscriptionCard(
             subscription = sampleSubscription,
+            category = sampleCategories.first(),
             today = LocalDate.now(),
             onClick = {},
             onLongClick = {}
@@ -122,6 +131,7 @@ private fun YearlySubscriptionCardPreview() {
     PreviewWrapper {
         SubscriptionCard(
             subscription = sampleYearlySubscription,
+            category = sampleCategories.last(),
             today = LocalDate.now(),
             onClick = {},
             onLongClick = {}

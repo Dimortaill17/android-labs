@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,22 +31,30 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.subtrack.R
 import com.example.subtrack.SubscriptionFormActivity
-import com.example.subtrack.data.repository.SubscriptionRepository
-import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.categoryTitle
+import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.data.utils.moneyText
+import com.example.subtrack.domain.Category
+import com.example.subtrack.domain.SortOrder
 import com.example.subtrack.domain.Subscription
+import com.example.subtrack.domain.SubscriptionSorter
 import com.example.subtrack.ui.components.BottomNavBar
+import com.example.subtrack.ui.components.PreviewWrapper
 import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SectionHeader
+import com.example.subtrack.ui.components.SortMenu
 import com.example.subtrack.ui.components.StatCard
 import com.example.subtrack.ui.components.SubscriptionCard
+import com.example.subtrack.ui.components.sampleCategories
+import com.example.subtrack.ui.components.sampleSubscriptions
 import com.example.subtrack.ui.theme.HeaderSubtitle
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -54,13 +62,17 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun HomeScreen(repository: SubscriptionRepository) {
+fun HomeScreen(
+    subscriptions: List<Subscription>,
+    categories: List<Category>,
+    defaultSortOrder: SortOrder,
+    onDeleteSubscription: (Subscription) -> Unit
+) {
     val context = LocalContext.current
-    val subscriptions by remember { repository.getSubscriptions() }.collectAsState(initial = emptyList())
     val today = LocalDate.now()
     val hour = LocalTime.now().hour
 
-    var sortDescending by remember { mutableStateOf(true) }
+    var sortOrder by remember(defaultSortOrder) { mutableStateOf(defaultSortOrder) }
     var subscriptionToDelete by remember { mutableStateOf<Subscription?>(null) }
 
     val activeSubscriptions = subscriptions.filter { it.nextPayment(today) != null }
@@ -73,19 +85,17 @@ fun HomeScreen(repository: SubscriptionRepository) {
     }
     val nextPaymentText = when (daysUntilPayment) {
         null -> "—"
-        0L -> "Сегодня"
-        else -> "$daysUntilPayment дн."
+        0L -> localizedStringResource(R.string.home_today)
+        else -> localizedStringResource(R.string.home_days_short, daysUntilPayment.toInt())
     }
-    val sortedSubscriptions = if (sortDescending) {
-        subscriptions.sortedByDescending { it.price }
-    } else {
-        subscriptions.sortedBy { it.price }
-    }
+    val categoriesById = categories.associateBy { it.id }
+    val categoryTitles = categories.associate { it.id to categoryTitle(it) }
+    val sortedSubscriptions = SubscriptionSorter.sort(subscriptions, sortOrder, today, categoryTitles)
     val greeting = when (hour) {
-        in 5..11 -> "Доброе утро!"
-        in 12..17 -> "Добрый день!"
-        in 18..22 -> "Добрый вечер!"
-        else -> "Доброй ночи!"
+        in 5..11 -> R.string.home_greeting_morning
+        in 12..17 -> R.string.home_greeting_day
+        in 18..22 -> R.string.home_greeting_evening
+        else -> R.string.home_greeting_night
     }
 
     val listState = rememberLazyListState()
@@ -123,7 +133,7 @@ fun HomeScreen(repository: SubscriptionRepository) {
 
                     Column {
                         HomeHeader(
-                            greeting = greeting,
+                            greeting = localizedStringResource(greeting),
                             onAddClick = { openForm(null) }
                         )
 
@@ -132,19 +142,19 @@ fun HomeScreen(repository: SubscriptionRepository) {
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             StatCard(
-                                label = "Активные подписки",
+                                label = localizedStringResource(R.string.home_active_subscriptions),
                                 value = activeSubscriptions.size.toString(),
                                 icon = R.drawable.ic_wallet,
                                 modifier = Modifier.weight(1f)
                             )
                             StatCard(
-                                label = "Годовые расходы · ${today.year}",
-                                value = Formats.money(yearTotal),
+                                label = localizedStringResource(R.string.home_year_expenses, today.year),
+                                value = moneyText(yearTotal),
                                 icon = R.drawable.ic_chart,
                                 modifier = Modifier.weight(1f)
                             )
                             StatCard(
-                                label = "Ближайшее списание",
+                                label = localizedStringResource(R.string.home_next_payment),
                                 value = nextPaymentText,
                                 icon = R.drawable.ic_calendar,
                                 modifier = Modifier.weight(1f)
@@ -155,13 +165,20 @@ fun HomeScreen(repository: SubscriptionRepository) {
             }
 
             item {
-                SectionHeader(
-                    title = "Ближайшие списания",
-                    action = "См. все",
-                    onActionClick = {
-                        coroutineScope.launch { listState.animateScrollToItem(allSubscriptionsIndex) }
+                SectionHeader(title = localizedStringResource(R.string.home_upcoming_payments)) {
+                    TextButton(
+                        onClick = {
+                            coroutineScope.launch { listState.animateScrollToItem(allSubscriptionsIndex) }
+                        }
+                    ) {
+                        Text(text = localizedStringResource(R.string.home_see_all))
+                        Icon(
+                            painter = painterResource(R.drawable.ic_chevron_right),
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
                     }
-                )
+                }
             }
 
             if (nearestSubscriptions.isEmpty()) {
@@ -170,6 +187,7 @@ fun HomeScreen(repository: SubscriptionRepository) {
                 items(nearestSubscriptions) { subscription ->
                     SubscriptionCard(
                         subscription = subscription,
+                        category = categoriesById[subscription.categoryId],
                         today = today,
                         onClick = { openForm(subscription) },
                         onLongClick = { subscriptionToDelete = subscription },
@@ -179,11 +197,12 @@ fun HomeScreen(repository: SubscriptionRepository) {
             }
 
             item {
-                SectionHeader(
-                    title = "Все подписки",
-                    action = if (sortDescending) "Сначала дороже" else "Сначала дешевле",
-                    onActionClick = { sortDescending = !sortDescending }
-                )
+                SectionHeader(title = localizedStringResource(R.string.home_all_subscriptions)) {
+                    SortMenu(
+                        selected = sortOrder,
+                        onSelect = { sortOrder = it }
+                    )
+                }
             }
 
             if (sortedSubscriptions.isEmpty()) {
@@ -192,6 +211,7 @@ fun HomeScreen(repository: SubscriptionRepository) {
                 items(sortedSubscriptions) { subscription ->
                     SubscriptionCard(
                         subscription = subscription,
+                        category = categoriesById[subscription.categoryId],
                         today = today,
                         onClick = { openForm(subscription) },
                         onLongClick = { subscriptionToDelete = subscription },
@@ -205,21 +225,21 @@ fun HomeScreen(repository: SubscriptionRepository) {
     subscriptionToDelete?.let { subscription ->
         AlertDialog(
             onDismissRequest = { subscriptionToDelete = null },
-            title = { Text(text = "Удалить подписку?") },
+            title = { Text(text = localizedStringResource(R.string.home_delete_title)) },
             text = { Text(text = subscription.name) },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        coroutineScope.launch { repository.deleteSubscription(subscription.id) }
+                        onDeleteSubscription(subscription)
                         subscriptionToDelete = null
                     }
                 ) {
-                    Text(text = "Удалить")
+                    Text(text = localizedStringResource(R.string.action_delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { subscriptionToDelete = null }) {
-                    Text(text = "Отмена")
+                    Text(text = localizedStringResource(R.string.action_cancel))
                 }
             }
         )
@@ -240,17 +260,17 @@ private fun HomeHeader(
             Text(
                 text = "SUBTRACK",
                 style = MaterialTheme.typography.labelMedium,
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
                 letterSpacing = 2.sp
             )
             Text(
                 text = greeting,
                 style = MaterialTheme.typography.headlineSmall,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(top = 4.dp)
             )
             Text(
-                text = "Ваши подписки всегда под контролем",
+                text = localizedStringResource(R.string.home_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = HeaderSubtitle,
                 modifier = Modifier.padding(top = 4.dp)
@@ -260,13 +280,13 @@ private fun HomeHeader(
         IconButton(
             onClick = onAddClick,
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.White.copy(alpha = 0.15f),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.15f),
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_plus),
-                contentDescription = "Добавить подписку"
+                contentDescription = localizedStringResource(R.string.home_add_subscription)
             )
         }
     }
@@ -275,7 +295,7 @@ private fun HomeHeader(
 @Composable
 private fun EmptyListText() {
     Text(
-        text = "Подписок пока нет. Нажмите «+», чтобы добавить.",
+        text = localizedStringResource(R.string.home_empty),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
@@ -283,4 +303,17 @@ private fun EmptyListText() {
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 8.dp)
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview() {
+    PreviewWrapper {
+        HomeScreen(
+            subscriptions = sampleSubscriptions,
+            categories = sampleCategories,
+            defaultSortOrder = SortOrder.PRICE_DESC,
+            onDeleteSubscription = {}
+        )
+    }
 }

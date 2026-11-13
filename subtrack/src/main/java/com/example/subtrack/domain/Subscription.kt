@@ -2,11 +2,12 @@ package com.example.subtrack.domain
 
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.temporal.ChronoUnit
 
 data class Subscription(
     val id: Long,
     val name: String,
-    val category: String,
+    val categoryId: Long,
     val price: Double,
     val yearly: Boolean,
     val startDate: LocalDate,
@@ -29,9 +30,19 @@ data class Subscription(
         return paymentDates().takeWhile { !it.isAfter(to) }.count { !it.isBefore(from) }
     }
 
+    fun paymentsUntil(to: LocalDate): List<LocalDate> {
+        return paymentDates().takeWhile { !it.isAfter(to) }.toList()
+    }
+
     fun paymentIn(month: YearMonth): LocalDate? {
         return paymentDates()
             .takeWhile { !YearMonth.from(it).isAfter(month) }
             .firstOrNull { YearMonth.from(it) == month }
+    }
+
+    fun shouldRemind(today: LocalDate = LocalDate.now()): Boolean {
+        if (!remind) return false
+        val payment = nextPayment(today) ?: return false
+        return ChronoUnit.DAYS.between(today, payment) == remindDays.toLong()
     }
 }
