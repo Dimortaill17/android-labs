@@ -15,7 +15,7 @@ class SubscriptionScheduleTest {
     ) = Subscription(
         id = 1,
         name = "Test",
-        category = "Другое",
+        categoryId = 11,
         price = 100.0,
         yearly = yearly,
         startDate = startDate,

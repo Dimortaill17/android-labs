@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,24 +31,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
-import com.example.subtrack.data.repository.SubscriptionRepository
 import com.example.subtrack.data.utils.Formats
+import com.example.subtrack.data.utils.LocalAppLocale
+import com.example.subtrack.data.utils.categoryTitle
+import com.example.subtrack.data.utils.localizedStringResource
+import com.example.subtrack.data.utils.moneyText
+import com.example.subtrack.domain.Category
 import com.example.subtrack.domain.PercentCalculator
+import com.example.subtrack.domain.Subscription
 import com.example.subtrack.ui.components.BottomNavBar
 import com.example.subtrack.ui.components.DonutChart
 import com.example.subtrack.ui.components.ExpenseRow
+import com.example.subtrack.ui.components.PreviewWrapper
 import com.example.subtrack.ui.components.Screen
 import com.example.subtrack.ui.components.SummaryCard
-import com.example.subtrack.ui.theme.ChartColors
+import com.example.subtrack.ui.components.sampleCategories
+import com.example.subtrack.ui.components.sampleSubscriptions
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun StatisticsScreen(repository: SubscriptionRepository) {
+fun StatisticsScreen(
+    subscriptions: List<Subscription>,
+    categories: List<Category>
+) {
     var month by remember { mutableStateOf(YearMonth.now()) }
-    val subscriptions by remember { repository.getSubscriptions() }.collectAsState(initial = emptyList())
 
     val payments = subscriptions
         .mapNotNull { subscription -> subscription.paymentIn(month)?.let { subscription to it } }
@@ -59,10 +68,14 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
     val yearEnd = LocalDate.of(month.year, 12, 31)
     val yearTotal = subscriptions.sumOf { it.price * it.paymentsBetween(yearStart, yearEnd) }
 
+    val categoriesById = categories.associateBy { it.id }
     val categoryTotals = payments
-        .groupBy { it.first.category }
-        .map { (category, list) -> category to list.sumOf { it.first.price } }
+        .groupBy { it.first.categoryId }
+        .map { (categoryId, list) -> categoriesById[categoryId] to list.sumOf { it.first.price } }
         .sortedByDescending { it.second }
+    val categoryColors = categoryTotals.map { (category, _) ->
+        category?.let { Color(it.color) } ?: MaterialTheme.colorScheme.outline
+    }
     val percents = PercentCalculator.calculate(categoryTotals.map { it.second })
     val shares = if (monthTotal > 0) {
         categoryTotals.map { (it.second / monthTotal).toFloat() }
@@ -83,19 +96,19 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Статистика",
+                    text = localizedStringResource(R.string.statistics_title),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = { month = month.minusMonths(1) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_chevron_left),
-                        contentDescription = "Предыдущий месяц",
+                        contentDescription = localizedStringResource(R.string.statistics_previous_month),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
                 Text(
-                    text = Formats.monthTitle(month),
+                    text = Formats.monthTitle(month, LocalAppLocale.current),
                     style = MaterialTheme.typography.labelLarge,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(112.dp)
@@ -103,7 +116,7 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
                 IconButton(onClick = { month = month.plusMonths(1) }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_chevron_right),
-                        contentDescription = "Следующий месяц",
+                        contentDescription = localizedStringResource(R.string.statistics_next_month),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -123,17 +136,17 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
                     ) {
                         DonutChart(
                             shares = shares,
-                            colors = ChartColors,
+                            colors = categoryColors,
                             modifier = Modifier.fillMaxSize()
                         )
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = Formats.money(monthTotal),
+                                text = moneyText(monthTotal),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "в месяц",
+                                text = localizedStringResource(R.string.subscription_per_month),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -145,7 +158,7 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
                     } else {
                         categoryTotals.forEachIndexed { index, (category, _) ->
                             LegendRow(
-                                color = ChartColors[index % ChartColors.size],
+                                color = categoryColors[index],
                                 category = category,
                                 percent = percents[index]
                             )
@@ -157,14 +170,14 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SummaryCard(
                     icon = R.drawable.ic_wallet,
-                    value = Formats.money(monthTotal),
-                    label = "в месяц",
+                    value = moneyText(monthTotal),
+                    label = localizedStringResource(R.string.subscription_per_month),
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
                     icon = R.drawable.ic_calendar,
-                    value = Formats.money(yearTotal),
-                    label = "в год",
+                    value = moneyText(yearTotal),
+                    label = localizedStringResource(R.string.subscription_per_year),
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -175,7 +188,7 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
-                        text = "Расходы по подпискам",
+                        text = localizedStringResource(R.string.statistics_expenses),
                         style = MaterialTheme.typography.titleMedium
                     )
 
@@ -197,10 +210,21 @@ fun StatisticsScreen(repository: SubscriptionRepository) {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun StatisticsScreenPreview() {
+    PreviewWrapper {
+        StatisticsScreen(
+            subscriptions = sampleSubscriptions,
+            categories = sampleCategories
+        )
+    }
+}
+
 @Composable
 private fun LegendRow(
     color: Color,
-    category: String,
+    category: Category?,
     percent: Int
 ) {
     Row(
@@ -214,7 +238,7 @@ private fun LegendRow(
                 .background(color)
         )
         Text(
-            text = category,
+            text = categoryTitle(category),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .weight(1f)
@@ -231,7 +255,7 @@ private fun LegendRow(
 @Composable
 private fun EmptyMonthText() {
     Text(
-        text = "В этом месяце платежей нет",
+        text = localizedStringResource(R.string.statistics_empty),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,

@@ -7,14 +7,21 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.subtrack.data.MockData
+import com.example.subtrack.domain.Categories
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [SubscriptionEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [SubscriptionEntity::class, CategoryEntity::class, PaymentEntity::class],
+    version = 3,
+    exportSchema = false
+)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
+    abstract fun categoryDao(): CategoryDao
+    abstract fun paymentDao(): PaymentDao
 
     companion object {
         @Volatile
@@ -28,16 +35,24 @@ abstract class AppDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context): AppDatabase {
             return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "subtrack.db")
-                .addCallback(object : RoomDatabase.Callback() {
-                    override fun onCreate(db: SupportSQLiteDatabase) {
-                        super.onCreate(db)
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val subscriptions = MockData.subscriptions().map { it.toEntity() }
-                            getInstance(context).subscriptionDao().insertAll(subscriptions)
-                        }
+                .fallbackToDestructiveMigration(true)
+                .addCallback(object : Callback() {
+                    override fun onOpen(db: SupportSQLiteDatabase) {
+                        super.onOpen(db)
+                        fillDatabase(context)
                     }
                 })
                 .build()
+        }
+
+        private fun fillDatabase(context: Context) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val database = getInstance(context)
+                if (database.categoryDao().count() == 0) {
+                    database.categoryDao().insertAll(Categories.defaults.map { it.toEntity() })
+                    database.subscriptionDao().insertAll(MockData.subscriptions().map { it.toEntity() })
+                }
+            }
         }
     }
 }

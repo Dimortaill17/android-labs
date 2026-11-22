@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.example.subtrack.R
 import com.example.subtrack.data.utils.Formats
 import com.example.subtrack.data.utils.localDateFromMillis
+import com.example.subtrack.data.utils.localizedStringResource
 import com.example.subtrack.data.utils.toEpochMillis
 import java.time.LocalDate
 
@@ -42,7 +43,7 @@ fun DateField(
             value = date?.let { Formats.inputDate(it) } ?: "",
             onValueChange = {},
             label = label,
-            placeholder = "дд.мм.гггг",
+            placeholder = localizedStringResource(R.string.form_date_placeholder),
             readOnly = true,
             trailingIcon = {
                 Icon(
@@ -75,7 +76,7 @@ fun DateField(
                         showDialog = false
                     }
                 ) {
-                    Text(text = "OK")
+                    Text(text = localizedStringResource(R.string.action_ok))
                 }
             },
             dismissButton = {
@@ -85,7 +86,7 @@ fun DateField(
                         showDialog = false
                     }
                 ) {
-                    Text(text = if (clearable) "Очистить" else "Отмена")
+                    Text(text = localizedStringResource(if (clearable) R.string.action_clear else R.string.action_cancel))
                 }
             }
         ) {

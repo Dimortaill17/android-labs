@@ -1,3 +1,139 @@
 <resources>
-    <string name="app_name">SubTrack</string>
+    <string name="app_name" translatable="false">SubTrack</string>
+
+    <string name="nav_home">Главная</string>
+    <string name="nav_statistics">Статистика</string>
+    <string name="nav_settings">Настройки</string>
+
+    <string name="action_retry">Повторить</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_clear">Очистить</string>
+    <string name="action_ok">OK</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+
+    <string name="home_greeting_morning">Доброе утро!</string>
+    <string name="home_greeting_day">Добрый день!</string>
+    <string name="home_greeting_evening">Добрый вечер!</string>
+    <string name="home_greeting_night">Доброй ночи!</string>
+    <string name="home_subtitle">Ваши подписки всегда под контролем</string>
+    <string name="home_add_subscription">Добавить подписку</string>
+    <string name="home_active_subscriptions">Активные подписки</string>
+    <string name="home_year_expenses">Годовые расходы · %1$d</string>
+    <string name="home_next_payment">Ближайшее списание</string>
+    <string name="home_today">Сегодня</string>
+    <string name="home_days_short">%1$d дн.</string>
+    <string name="home_upcoming_payments">Ближайшие списания</string>
+    <string name="home_see_all">См. все</string>
+    <string name="home_all_subscriptions">Все подписки</string>
+    <string name="home_empty">Подписок пока нет. Нажмите «+», чтобы добавить.</string>
+    <string name="home_delete_title">Удалить подписку?</string>
+
+    <string name="subscription_finished">Завершена</string>
+    <string name="subscription_per_year">в год</string>
+    <string name="subscription_per_month">в месяц</string>
+
+    <string name="form_add_title">Добавить подписку</string>
+    <string name="form_edit_title">Редактировать подписку</string>
+    <string name="form_back">Назад</string>
+    <string name="form_name">Название сервиса</string>
+    <string name="form_name_placeholder">Например, Netflix</string>
+    <string name="form_category">Категория</string>
+    <string name="form_price">Стоимость</string>
+    <string name="form_period">Периодичность оплаты</string>
+    <string name="form_monthly">Ежемесячно</string>
+    <string name="form_yearly">Ежегодно</string>
+    <string name="form_start_date">Дата первого / ближайшего платежа</string>
+    <string name="form_end_date">Повторять до (необязательно)</string>
+    <string name="form_date_placeholder">дд.мм.гггг</string>
+    <string name="form_reminder">Напоминание</string>
+    <string name="form_note">Заметка (необязательно)</string>
+    <string name="form_note_placeholder">Например, семейная подписка</string>
+    <string name="form_save">Сохранить подписку</string>
+    <string name="form_error_name">Введите название сервиса</string>
+    <string name="form_error_price">Введите стоимость</string>
+    <string name="form_error_end_date">Дата окончания раньше даты первого платежа</string>
+
+    <string name="reminder_1_day">За 1 день</string>
+    <string name="reminder_3_days">За 3 дня</string>
+    <string name="reminder_5_days">За 5 дней</string>
+
+    <string name="category_entertainment">Развлечения</string>
+    <string name="category_music">Музыка</string>
+    <string name="category_movies">Кино и сериалы</string>
+    <string name="category_video">Видео</string>
+    <string name="category_games">Игры</string>
+    <string name="category_cloud">Облако</string>
+    <string name="category_design">Дизайн</string>
+    <string name="category_work">Работа</string>
+    <string name="category_education">Образование</string>
+    <string name="category_health">Здоровье и спорт</string>
+    <string name="category_other">Другое</string>
+
+    <string name="statistics_title">Статистика</string>
+    <string name="statistics_previous_month">Предыдущий месяц</string>
+    <string name="statistics_next_month">Следующий месяц</string>
+    <string name="statistics_expenses">Расходы по подпискам</string>
+    <string name="statistics_empty">В этом месяце платежей нет</string>
+
+    <string name="settings_title">Настройки</string>
+    <string name="settings_appearance">Внешний вид</string>
+    <string name="settings_theme_light">Светлая</string>
+    <string name="settings_theme_dark">Тёмная</string>
+    <string name="settings_theme_system">Системная</string>
+    <string name="settings_language">Язык приложения</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_about_text">SubTrack. Учёт и контроль платных подписок</string>
+    <string name="settings_delete_all">Удалить все данные</string>
+    <string name="settings_delete_all_title">Удалить все данные?</string>
+    <string name="settings_delete_all_text">Все подписки будут удалены, а настройки сброшены. Это действие нельзя отменить.</string>
+    <string name="settings_delete_all_done">Все данные удалены</string>
+
+    <string name="home_sort">Сортировка</string>
+    <string name="sort_price_desc">Сначала дороже</string>
+    <string name="sort_price_asc">Сначала дешевле</string>
+    <string name="sort_date_near">Ближайший платёж</string>
+    <string name="sort_date_far">Дальний платёж</string>
+    <string name="sort_name">По названию</string>
+    <string name="sort_category">По категории</string>
+
+    <string name="settings_subscriptions">Подписки</string>
+    <string name="settings_default_sort">Сортировка по умолчанию</string>
+    <string name="settings_categories">Категории</string>
+    <string name="settings_hide_amounts">Скрывать суммы</string>
+    <string name="settings_hide_amounts_hint">Вместо сумм показывать •••</string>
+
+    <string name="categories_title">Категории</string>
+    <string name="categories_add">Добавить категорию</string>
+    <string name="categories_hint">Нажмите на категорию, чтобы переименовать её, выбрать цвет или удалить</string>
+    <string name="category_new">Новая категория</string>
+    <string name="category_edit">Изменить категорию</string>
+    <string name="category_name">Название</string>
+    <string name="category_color">Цвет</string>
+    <string name="category_delete_title">Удалить категорию?</string>
+    <string name="category_delete_text">Категория «%1$s» будет удалена, а её подписки перейдут в категорию «%2$s».</string>
+    <string name="action_save">Сохранить</string>
+
+    <string name="history_title">История платежей</string>
+    <string name="history_hint">Нажмите на платёж, чтобы отметить, прошла ли оплата</string>
+    <string name="history_paid_total">Всего оплачено</string>
+    <string name="history_count_paid">Оплачено</string>
+    <string name="history_count_failed">Не прошло</string>
+    <string name="history_count_missed">Пропущено</string>
+    <string name="payment_status_paid">Оплачено</string>
+    <string name="payment_status_failed">Не прошла</string>
+    <string name="payment_status_missed">Пропущено</string>
+    <string name="payment_status_upcoming">Ожидается</string>
+    <string name="payment_mark_paid">Отметить «Оплачено»</string>
+    <string name="payment_mark_failed">Отметить «Не прошла»</string>
+    <string name="payment_mark_clear">Снять отметку</string>
+
+    <string name="notification_channel_name">Напоминания о списаниях</string>
+    <string name="notification_channel_description">Уведомления о ближайших платежах по подпискам</string>
+    <plurals name="notification_text">
+        <item quantity="one">Через %1$d день спишется %2$s</item>
+        <item quantity="few">Через %1$d дня спишется %2$s</item>
+        <item quantity="many">Через %1$d дней спишется %2$s</item>
+        <item quantity="other">Через %1$d дня спишется %2$s</item>
+    </plurals>
 </resources>

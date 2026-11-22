@@ -9,7 +9,7 @@ import java.time.LocalDate
 data class SubscriptionEntity(
     @PrimaryKey val id: Long,
     val name: String,
-    val category: String,
+    val categoryId: Long,
     val price: Double,
     val yearly: Boolean,
     val startDate: LocalDate,
@@ -24,7 +24,7 @@ fun SubscriptionEntity.toSubscription(): Subscription {
     return Subscription(
         id = id,
         name = name,
-        category = category,
+        categoryId = categoryId,
         price = price,
         yearly = yearly,
         startDate = startDate,
@@ -40,7 +40,7 @@ fun Subscription.toEntity(): SubscriptionEntity {
     return SubscriptionEntity(
         id = id,
         name = name,
-        category = category,
+        categoryId = categoryId,
         price = price,
         yearly = yearly,
         startDate = startDate,
